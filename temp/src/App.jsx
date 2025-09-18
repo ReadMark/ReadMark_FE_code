@@ -10,7 +10,7 @@ import Login from './pages/login.jsx';
 function App() {
   return (
     <BrowserRouter>
-      <Header /> {/* Header는 BrowserRouter 안에 있어야 함 */}
+      <Header /> 
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/mypage" element={<Mypage />} />
