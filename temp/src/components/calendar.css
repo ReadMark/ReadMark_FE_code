@@ -1,0 +1,53 @@
+/* 캘린더 전체를 감싸는 컨테이너
+.calendar_container {
+  
+} */
+
+/* 클릭한 날짜 (선택된 날짜) */
+.react-calendar__tile--active {
+  background-color: rgb(183, 244, 255) !important; /* 클릭한 날짜 배경 */
+  color: rgb(255, 255, 255) !important;                          /* 글자 색상 */
+}
+
+/* 오늘 날짜 */
+.react-calendar__tile--now {
+  background-color: rgb(246, 255, 0) !important; /* 오늘 날짜 노랑 */
+  color: black !important;
+}
+
+.react-calendar {
+  background-color: transparent !important; /* 부모 회색 보이도록 */
+}
+
+
+/* react-calendar 기본 스타일 */
+.react-calendar {
+  border: none;                /* 기본 테두리 제거 */
+  font-family: 'Gasoek One', sans-serif; /* 폰트 설정 */
+  width: 50%;                /* 캘린더 전체 넓이 */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* 그림자 효과 */
+  border-radius: 10px;         /* 모서리 둥글게 */
+}
+
+/* 날짜 하나(타일) 스타일 */
+.react-calendar__tile {
+  width: 100px;                
+  min-height: 120px;           /* 최소 높이로 충분히 확보 */
+  font-size: 16px;             
+  position: relative;          
+  display: flex;               
+  flex-direction: column;      
+  justify-content: start;      
+  align-items: center;         
+  padding-top: 5px;            /* 위쪽 여백 */
+  box-sizing: border-box;      /* padding 포함 높이 계산 */
+}
+
+
+/* 날짜 아래에 들어가는 도장 이미지 */
+.stamp_img {
+  width: 130px;                 /* 도장 이미지 가로 크기 */
+  height: 90px;                /* 도장 이미지 세로 크기 */
+  margin-top: -5px;
+  margin-left: -4px;
+}
