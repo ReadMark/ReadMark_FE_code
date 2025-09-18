@@ -6,6 +6,7 @@ import WantPage from './pages/want.jsx';
 import DonePage from './pages/done.jsx';
 import Join from './pages/Join.jsx';
 import Login from './pages/login.jsx';
+import CalendarPage from './pages/CalendarPage.jsx';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/done" element={<DonePage />} />
         <Route path="/join" element={<Join />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/calendar" element={<CalendarPage />} />
       </Routes>
     </BrowserRouter>
   );

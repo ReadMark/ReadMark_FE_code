@@ -18,7 +18,7 @@ function Header() {
 
       <div className="header_right">
         <Link className="header__text" to="/mypage">마이페이지</Link>
-        <Link className="header__text" to="/want">캘린더</Link>
+        <Link className="header__text" to="/calendar">캘린더</Link>
       </div>
     </header>
   );
