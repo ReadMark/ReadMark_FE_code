@@ -1,14 +1,23 @@
 .MissonTitle{
-    font-size: 40px;
+    font-size: 30px;
 }
 
 .MissonText{
-    font-size: 30px;
+    font-size: 25px;
+    display: flex;
+    justify-content: start;
+    flex-direction: row;
+     margin-left: 20px;
+     margin-bottom: 8px;
+}
+
+.mission{
+   margin-top: 6px;
 }
 
 .mission-each{
     background-color: rgb(216, 216, 216);
-    width: 50%;
+    width: 100%;
     margin-top: 30px;
     display: flex;
     align-items: center;
@@ -18,4 +27,9 @@
 
 body{
     background-color: white; 
+}
+
+.mission_container{
+    margin-left: 30px;
+    margin-right: 20px;
 }

@@ -1,5 +1,19 @@
 .CalendarContainer {
   display: flex;
   flex-direction: row;
+  gap: 20px;         /* 캘린더랑 미션 사이 간격 */
+  padding: 20px;
+  width: 100%;
+    margin-top: 40px;
+  box-sizing: border-box;
 }
 
+/* 캘린더 영역 */
+.CalendarContainer .calendar_container {
+  flex: 2;           /* 화면 비율: 2 */
+}
+
+/* 미션 영역 */
+.CalendarContainer .mission_container {
+  flex: 1;           /* 화면 비율: 1 */
+}

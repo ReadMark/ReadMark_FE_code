@@ -1,5 +1,6 @@
 import CalendarP from '../components/calendar';
 import Mission from '../components/mission'; 
+import './CalendarPage.css';
 
 function CalendarPage() {
   return (

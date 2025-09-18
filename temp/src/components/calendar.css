@@ -1,7 +1,7 @@
-/* 캘린더 전체를 감싸는 컨테이너
+ /* 캘린더 전체를 감싸는 컨테이너 */
 .calendar_container {
-  
-} */
+  margin-left: 20px;
+} 
 
 /* 클릭한 날짜 (선택된 날짜) */
 .react-calendar__tile--active {
@@ -15,19 +15,25 @@
   color: black !important;
 }
 
+.CalendarContainer .calendar_container {
+  flex: 1;       /* 비율 줄이기 */
+  max-width: 50%; /* 최대 가로 크기 제한 */
+}
+
+
 .react-calendar {
   background-color: transparent !important; /* 부모 회색 보이도록 */
 }
 
 
-/* react-calendar 기본 스타일 */
 .react-calendar {
-  border: none;                /* 기본 테두리 제거 */
-  font-family: 'Gasoek One', sans-serif; /* 폰트 설정 */
-  width: 50%;                /* 캘린더 전체 넓이 */
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* 그림자 효과 */
-  border-radius: 10px;         /* 모서리 둥글게 */
+  border: none;
+  font-family: 'Gasoek One', sans-serif;
+  width: 100%;          /* 부모 flex 크기에 맞게 채우도록 */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  border-radius: 10px;
 }
+
 
 /* 날짜 하나(타일) 스타일 */
 .react-calendar__tile {
