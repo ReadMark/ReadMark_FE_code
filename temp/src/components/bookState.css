@@ -1,0 +1,35 @@
+.main__books-state{
+  margin: 20px;
+  color: rgb(136, 136, 136);
+  font-size: 20px;
+}
+
+.main__books-state:hover{
+  color: rgb(0, 0, 0);
+}
+
+.now, .want, .done{
+  color: black;
+  font-weight: 500;
+}
+
+.main__line{
+  border-top: 1px solid #000000;
+  width: 70%;
+}
+
+.main__line-container{
+  display: flex;
+  justify-content: center;
+}
+
+.main__books-state-container{
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.main__books{
+  margin: 30px 40px 30px;
+  position: relative;
+}

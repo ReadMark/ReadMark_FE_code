@@ -1,0 +1,29 @@
+.main_img-text{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+  color: white;
+  font-size: 30px;
+  font-weight: 5000;
+  text-shadow: 1px 1px 1px black;
+}
+
+.main_img-container{
+  position: relative;
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0px;
+  padding: 0px;
+  margin-top: -13px;
+}
+
+.main_img-text-container{
+  position: absolute;
+  width: 100%;
+   pointer-events: none; 
+}

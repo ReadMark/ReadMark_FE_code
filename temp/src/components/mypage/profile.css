@@ -1,0 +1,6 @@
+.my_profile-img {
+  width: 130px;   /* 원하는 크기 */
+  height: 130px;  /* width랑 height 똑같이 해야 동그라미 */
+  border-radius: 50%;
+  object-fit: cover;  /* 이미지 잘리는 거 방지 + 꽉 채우기 */
+}

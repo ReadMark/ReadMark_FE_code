@@ -1,0 +1,128 @@
+.Join-all{   /* 기준점을 좌상단으로 */
+   width: 100%;
+  height: 100vh;       /* 꽉 채우기 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.person{
+  width: 22px;
+  margin-left: 6px;
+}
+
+
+.login_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 600px;
+  height: 500px;
+  border-radius: 20px;
+  background-color: white;
+}
+
+.join{
+  width: 600px;
+  height: 680px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 20px;
+  background-color: white;
+}
+
+body{
+  background-color: rgb(236, 236, 236);
+}
+
+.title{
+  font-size: 40px;
+  margin-bottom: -30px;
+}
+
+.login_title{
+  font-size: 22px;
+}
+
+.login_input-container{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  border-radius: 10px;
+  border: 1px solid rgb(193, 193, 193);
+}
+
+.login_button-container{
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.pw{
+  margin-left:3px;
+}
+
+input {
+  border: none;
+  outline: none;
+  width: 464px;
+  height: 51px;
+  font-size: 20px;
+}
+
+img{
+  width: 28px;
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-top: 5px;
+}
+
+button{
+  all: unset;
+  background-color:rgb(232, 232, 232);
+  width: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 45px;
+  font-size: 18px;
+  border-radius: 10px;
+}
+button:hover{
+  background-color: rgb(240, 240, 240);
+}
+
+.sections{
+  margin-top: 40px;
+}
+
+.Join-each{
+  margin-top: 30px;
+}
+
+button:active{
+  background-color: rgb(177, 177, 177);
+}
+
+.bottom_container{
+  display: flex;
+  
+}
+
+.front{
+  color: gray;
+  font-size: 17px;
+  margin-right: 8px;
+}
+
+.back{
+  font-size: 17px;
+}
+
+a{
+  text-decoration: none;   /* 밑줄 제거 */
+  color: inherit;
+}
