@@ -34,12 +34,21 @@ function Mypage() {
           <Record title="다 읽은 책" count="5권"/>
         </div>
 
-        <button 
+        <div className='button-container'>
+          <button 
           className='modify-button' 
           onClick={() => setShowEditButtons(!showEditButtons)}
         >
           수정하기
         </button>
+        <button 
+          className='modify-button' 
+          onClick={() => setShowEditButtons(!showEditButtons)}
+        >
+          삭제하기 
+        </button>
+        </div>
+        
 
         <div className="my_fa-page-container-container">
           {/* 즐겨찾기한 페이지 */}
@@ -50,17 +59,17 @@ function Mypage() {
               </div>
 
               <div className="my_fa-page-bottom-container">
-                <Mypa showEdit={showEditButtons} onEditClick={() => setShowModal(true)} />
-                <Mypa showEdit={showEditButtons} onEditClick={() => setShowModal(true)} />
-                <Mypa showEdit={showEditButtons} onEditClick={() => setShowModal(true)} />
-                <Mypa showEdit={showEditButtons} onEditClick={() => setShowModal(true)} />
+                <Mypa showEdit={showEditButtons} onEditClick={() => setShowSentenceModal(true)} />
+                <Mypa showEdit={showEditButtons} onEditClick={() => setShowSentenceModal(true)} />
+                <Mypa showEdit={showEditButtons} onEditClick={() => setShowSentenceModal(true)} />
+                <Mypa showEdit={showEditButtons} onEditClick={() => setShowSentenceModal(true)} />
               </div>
 
               <div className="my_fa-page-bottom-container">
-                <Mypa showEdit={showEditButtons} onEditClick={() => setShowModal(true)} />
-                <Mypa showEdit={showEditButtons} onEditClick={() => setShowModal(true)} />
-                <Mypa showEdit={showEditButtons} onEditClick={() => setShowModal(true)} />
-                <Mypa showEdit={showEditButtons} onEditClick={() => setShowModal(true)} />
+                <Mypa showEdit={showEditButtons} onEditClick={() => setShowSentenceModal(true)} />
+                <Mypa showEdit={showEditButtons} onEditClick={() => setShowSentenceModal(true)} />
+                <Mypa showEdit={showEditButtons} onEditClick={() => setShowSentenceModal(true)} />
+                <Mypa showEdit={showEditButtons} onEditClick={() => setShowSentenceModal(true)} />
               </div>
             </div>
           </div>
@@ -75,7 +84,7 @@ function Mypage() {
               <div className="my_fa-page-bottom-container">
                 <Mysen showEdit={showEditButtons} onEditClick={() => setShowSentenceModal(true)} />
               </div>
-              
+
               <div className="my_fa-page-bottom-container">
                 <Mysen showEdit={showEditButtons} onEditClick={() => setShowSentenceModal(true)} />
               </div>

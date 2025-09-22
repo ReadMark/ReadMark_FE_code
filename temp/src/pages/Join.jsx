@@ -4,7 +4,7 @@ import id from "../assets/Login/id.svg";
 import mail from "../assets/Login/mail.svg";
 import person from "../assets/Login/person.svg";
 import pw from "../assets/Login/pw.svg";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 function Join() {
@@ -12,49 +12,78 @@ function Join() {
     name: "",
     email: "",
     userId: "",
-    password: ""
+    password: "",
+    profileImage: null
   });
 
-  const handleChange = (key, value) => {
-    setForm({ ...form, [key]: value });
-  };
+  const navigate = useNavigate();
+
+  const handleChange = (key, value) => setForm({ ...form, [key]: value });
 
   const handleJoin = async () => {
-  try {
-    const res = await fetch("http://43.200.102.14:5000/api/users/join", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userId: form.userId,
-        password: form.password,
-        email: form.email,
-        name: form.name,
-      }),
-    });
-
-    let data;
     try {
-      data = await res.json(); // JSON 파싱 시도
-    } catch {
-      data = { message: "서버에서 JSON이 아니라 다른 걸 보냄" };
+      // 이메일 간단 체크
+      if (!form.email.includes("@")) {
+        alert("이메일 형식이 올바르지 않습니다. '@'를 포함해야 합니다.");
+        return;
+      }
+
+      // 회원가입
+      const res = await fetch("http://43.200.102.14:5000/api/users/join", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: form.userId,
+          password: form.password,
+          email: form.email,
+          name: form.name,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        alert(`회원가입 실패: ${data.message || "알 수 없는 오류"}`);
+        return;
+      }
+
+      alert("회원가입 성공!");
+
+      // 2️⃣ 서버 반환 userId 가져오기
+      const userId = data.user?.userId;
+      if (!userId) return alert("서버에서 userId를 가져오지 못했습니다.");
+
+      // 3️⃣ 프로필 이미지 업로드
+      if (form.profileImage) {
+        const imgData = new FormData();
+        imgData.append("image", form.profileImage);
+
+        const imgRes = await fetch(`http://43.200.102.14:5000/api/users/${userId}/profile-image`, {
+          method: "POST",
+          body: imgData
+        });
+
+        const imgDataJson = await imgRes.json();
+        if (imgRes.ok && imgDataJson.success) {
+          // localStorage에 프로필 이미지 URL 저장
+          localStorage.setItem("profileImage", `http://43.200.102.14:5000${imgDataJson.profileImageUrl}`);
+        } else {
+          console.error("프로필 업로드 실패:", imgDataJson);
+        }
+      }
+
+      // 4️⃣ localStorage에 회원 정보 저장
+      localStorage.setItem("userId", userId);
+      localStorage.setItem("username", form.userId);
+      localStorage.setItem("name", form.name);
+      localStorage.setItem("email", form.email);
+
+      navigate("/login"); // 가입 후 로그인 페이지 이동
+
+    } catch (err) {
+      console.error("네트워크 에러:", err);
+      alert("서버 연결 실패");
     }
-
-    console.log("📡 status:", res.status);
-    console.log("📡 response:", data);
-
-    if (res.ok) {
-      alert("회원가입 성공! 🎉");
-      console.log("가입 결과:", data);
-      // TODO: 로그인 페이지로 이동
-    } else {
-      alert(`회원가입 실패: ${data.message || "알 수 없는 오류"}`);
-    }
-  } catch (err) {
-    console.error("❌ 네트워크 에러:", err);
-    alert("서버 연결 실패");
-  }
-};
-
+  };
 
   return (
     <div className='Join-all'>
@@ -65,6 +94,8 @@ function Join() {
           <div className='sections'>
             <JoinEach title="이름" type="text" Logo={person} 
               onChange={(e) => handleChange("name", e.target.value)} />
+            <JoinEach title="프로필 사진" type="file" 
+              onChange={(e) => handleChange("profileImage", e.target.files[0])} />
             <JoinEach title="이메일" type="email" Logo={mail}
               onChange={(e) => handleChange("email", e.target.value)} />
             <JoinEach title="아이디" type="text" Logo={id}
