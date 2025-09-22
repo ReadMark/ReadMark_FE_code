@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import Bookimg from "../assets/bookImg.jpg";
 import './Modal.css';
 
-function ModalEdit({ onClose }) {
+function ModalEditsen({ onClose }) {
   const [title, setTitle] = useState("트로피컬 나이트");
-  const [author, setAuthor] = useState("조예은");
+  const [sen, setsen] = useState("조예은");
   const [pages, setPages] = useState(100);
 
   return (
@@ -21,8 +21,8 @@ function ModalEdit({ onClose }) {
           <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
         </div>
         <div>
-          <p>작가</p>
-          <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <p>글</p>
+          <input type="text" value={sen} onChange={(e) => setsen(e.target.value)} />
         </div>
         <div>
           <p>페이지 수</p>
@@ -39,4 +39,4 @@ function ModalEdit({ onClose }) {
   );
 }
 
-export default ModalEdit;
+export default ModalEditsen;

@@ -16,6 +16,11 @@
     border-right: 1px solid black;
 }
 
+.my-fa-page-each-container button {
+  position: absolute;
+  z-index: 9999;
+}
+
 .my_profile-container{
     padding: 50px;
     display: flex;
@@ -230,4 +235,12 @@
     justify-content: center;
     padding-top: 40px;
     padding-bottom: 40px;
+}
+
+.Mypage-all {
+  transform: scale(0.85);
+  transform-origin: top left;
+  width: 117.65%;
+  height: auto;
+  overflow: visible; /* 여기 수정 */
 }

@@ -1,4 +1,3 @@
-// Mypage.js
 import './mypage.css';
 import Header from '../components/Header';
 import Mypa from "../components/mypage/Mypa";
@@ -6,14 +5,19 @@ import Profile from "../components/mypage/profile";
 import Record from '../components/mypage/record';
 import ProBlock from '../components/mypage/ProBlock';
 import Mysen from '../components/mypage/Mysen';
+import ModalEdit from '../components/ModalEdit';
+import ModalEditsen from '../components/ModalEditSentence'; // 문장 모달
 import React, { useState } from "react";
 
 function Mypage() {
   const [showEditButtons, setShowEditButtons] = useState(false);
+  const [showModal, setShowModal] = useState(false); // 페이지 모달 상태
+  const [showSentenceModal, setShowSentenceModal] = useState(false); // 문장 모달 상태
 
   return (
     <>
       <Header />
+
       <main className='Mypage-all'>
         <div className="my_top_container">
           <Profile />
@@ -30,7 +34,6 @@ function Mypage() {
           <Record title="다 읽은 책" count="5권"/>
         </div>
 
-        {/* 수정하기 버튼 */}
         <button 
           className='modify-button' 
           onClick={() => setShowEditButtons(!showEditButtons)}
@@ -39,49 +42,53 @@ function Mypage() {
         </button>
 
         <div className="my_fa-page-container-container">
+          {/* 즐겨찾기한 페이지 */}
           <div className="my_fa-page-container">
             <div className="my-fa-page">
               <div className="my_fa-page-title">
-                <div className="my-fa-page-title-real">
-                  즐겨찾기한 페이지
-                </div>
+                <div className="my-fa-page-title-real">즐겨찾기한 페이지</div>
               </div>
 
               <div className="my_fa-page-bottom-container">
-                <Mypa showEdit={showEditButtons} />
-                <Mypa showEdit={showEditButtons} />
-                <Mypa showEdit={showEditButtons} />
-                <Mypa showEdit={showEditButtons} />
+                <Mypa showEdit={showEditButtons} onEditClick={() => setShowModal(true)} />
+                <Mypa showEdit={showEditButtons} onEditClick={() => setShowModal(true)} />
+                <Mypa showEdit={showEditButtons} onEditClick={() => setShowModal(true)} />
+                <Mypa showEdit={showEditButtons} onEditClick={() => setShowModal(true)} />
               </div>
 
               <div className="my_fa-page-bottom-container">
-                <Mypa showEdit={showEditButtons} />
-                <Mypa showEdit={showEditButtons} />
-                <Mypa showEdit={showEditButtons} />
-                <Mypa showEdit={showEditButtons} />
+                <Mypa showEdit={showEditButtons} onEditClick={() => setShowModal(true)} />
+                <Mypa showEdit={showEditButtons} onEditClick={() => setShowModal(true)} />
+                <Mypa showEdit={showEditButtons} onEditClick={() => setShowModal(true)} />
+                <Mypa showEdit={showEditButtons} onEditClick={() => setShowModal(true)} />
               </div>
             </div>
           </div>
 
+          {/* 즐겨찾기한 문장 */}
           <div className="my_fa-page-container my-fa-page-right">
             <div className="my-fa-page">
               <div className="my_fa-page-title">
-                <div className="my-fa-page-title-real">
-                  즐겨찾기한 문장
-                </div>
+                <div className="my-fa-page-title-real">즐겨찾기한 문장</div>
               </div>
 
               <div className="my_fa-page-bottom-container">
-                <Mysen showEdit={showEditButtons} />
+                <Mysen showEdit={showEditButtons} onEditClick={() => setShowSentenceModal(true)} />
+              </div>
+              
+              <div className="my_fa-page-bottom-container">
+                <Mysen showEdit={showEditButtons} onEditClick={() => setShowSentenceModal(true)} />
               </div>
 
-              <div className="my_fa-page-bottom-container">
-                <Mysen showEdit={showEditButtons} />
-              </div>
             </div>
           </div>
         </div>
       </main>
+
+      {/* 페이지 모달 */}
+      {showModal && <ModalEdit onClose={() => setShowModal(false)} />}
+      {/* 문장 모달 */}
+      {showSentenceModal && <ModalEditsen onClose={() => setShowSentenceModal(false)} />}
     </>
   );
 }

@@ -2,7 +2,7 @@ import Bookimg from "../mypage/bookImg.jpg";
 import ModifyIcon from './modify.svg';
 import './mypage.css';
 
-function Mypa({ showEdit }) {
+function Mypa({ showEdit, onEditClick }) {
   return (
     <div className="my-fa-page-each-container" style={{ position: "relative" }}>
       {showEdit && (
@@ -17,7 +17,9 @@ function Mypa({ showEdit }) {
             background: "none",
             border: "none",
             padding: 0,
+            zIndex: 9999
           }}
+          onClick={onEditClick}
         >
           <img src={ModifyIcon} alt="수정" style={{ width: "20px", height: "20px" }} />
         </button>
@@ -34,3 +36,4 @@ function Mypa({ showEdit }) {
 }
 
 export default Mypa;
+
