@@ -8,6 +8,7 @@ import './want.css';
 function DonePage() {
   return (
     <>
+    <Header />
       <MainImage />
       <BookStated />
 

@@ -12,6 +12,7 @@
 .my_fa-page-container {
     margin-right: 20px; /* 오른쪽 간격 */
     margin-left: 30px; /* 왼쪽 간격 */
+    margin-bottom: -100px;
 
 }
 .my-fa-page-right {
@@ -248,4 +249,18 @@
     justify-content: center;
     padding-top: 40px;
     padding-bottom: 40px;
+}
+
+.modify-button{
+    margin-top: 50px;
+    margin-bottom: -90px;
+    margin-left: 40px;
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+    background-color: rgb(222, 222, 222);
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    padding: 5px 40px;
+    border-radius: 10px;
 }

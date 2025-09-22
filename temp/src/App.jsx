@@ -11,7 +11,6 @@ import CalendarPage from './pages/CalendarPage.jsx';
 function App() {
   return (
     <BrowserRouter>
-      <Header /> 
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/mypage" element={<Mypage />} />

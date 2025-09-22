@@ -5,6 +5,7 @@ import id from "../assets/Login/id.svg";
 import mail from "../assets/Login/mail.svg"
 import person from "../assets/Login/person.svg"
 import pw from "../assets/Login/pw.svg"
+import { Link } from 'react-router-dom';
 
 function Join() {
   return (
@@ -29,7 +30,7 @@ function Join() {
 
       <div className="bottom_container">
         <div className="front">계정이 있으신가요?</div>
-        <div className="back">로그인</div>
+        <Link to="/login"><div className="back">로그인</div></Link>
       </div>
     </div>
   </main>

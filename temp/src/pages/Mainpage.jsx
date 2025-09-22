@@ -8,6 +8,7 @@ import './mainpage.css';
 function MainPage() {
   return (
     <>
+    <Header />
       <MainImage />
       <BookState />
 

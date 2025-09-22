@@ -2,6 +2,7 @@ import "./Join.css";
 import JoinEach from "../components/Join-each";
 import person from "../assets/Login/person.svg"
 import pw from "../assets/Login/pw.svg"
+import { Link } from "react-router-dom";
 
 function Login() {
   return (
@@ -21,7 +22,7 @@ function Login() {
 
       <div class="bottom_container">
         <div class="front">계정이 없으신가요?</div>
-        <div class="back">회원가입</div>
+        <Link to="/join"><div className="back">회원가입</div></Link>
       </div>
     </div>
   </main>

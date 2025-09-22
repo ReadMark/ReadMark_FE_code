@@ -8,6 +8,7 @@ import './want.css';
 function WantPage() {
   return (
     <>
+    <Header />
       <MainImage />
       <BookStatew />
 

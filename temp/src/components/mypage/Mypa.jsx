@@ -20,5 +20,3 @@ function Mypa() {
 }
 
 export default Mypa;
-
-

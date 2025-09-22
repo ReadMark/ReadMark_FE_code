@@ -10,6 +10,7 @@ import Book from '../components/Book-each';
 function Mypage() {
   return (
     <>
+    <Header />
 
     <main className='Mypage-all'>
 
@@ -28,6 +29,7 @@ function Mypage() {
       <Record title="다 읽은 책" count="5권"/>
       </div>
 
+      <button className='modify-button'>수정하기</button>
 
     <div className="my_fa-page-container-container">
 
