@@ -237,6 +237,17 @@
     font-size: 18px;
 }
 
+.index{
+    background-color: rgb(205, 221, 255);
+    position: absolute;
+    left: -13px;
+    font-size: 20px;
+    width: 120px;
+    opacity: 0.9; 
+    padding: 10px 15px;
+    top: 12px;
+}
+
 .my-fa-page-book-text{
   color: rgb(85, 85, 85);
   font-size: 16px;
