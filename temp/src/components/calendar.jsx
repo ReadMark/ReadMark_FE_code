@@ -1,14 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../components/calendar.css';
-import stamp from '../assets/stamp.svg'; // 도장 이미지 경로
+import stamp from '../assets/stamp.svg';
+import axios from 'axios';
 
 function CalendarP() {
   const [date, setDate] = useState(new Date());
+  const [stampedDates, setStampedDates] = useState([]);
 
-  // 도장 찍을 날짜들 (예시)
-  const stampedDates = ['2025-09-18', '2025-09-20'];
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
+
+  useEffect(() => {
+    if (!token || !userId) return;
+
+    const fetchStampedDates = async () => {
+      try {
+        const res = await axios.get(`http://43.200.102.14:5000/api/image/stats/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        // 예: res.data.readingDays = ['2025-09-18', '2025-09-20']
+        setStampedDates(res.data.readingDays || []);
+      } catch (err) {
+        console.error("도장 날짜 불러오기 실패:", err);
+      }
+    };
+
+    fetchStampedDates();
+  }, [token, userId]);
 
   const tileContent = ({ date, view }) => {
     const dateStr = date.toISOString().split('T')[0];
@@ -22,7 +43,7 @@ function CalendarP() {
       <Calendar
         onChange={setDate}
         value={date}
-        tileContent={tileContent}  // 여기서 도장 이미지 넣음
+        tileContent={tileContent}
       />
     </div>
   );
