@@ -1,14 +1,14 @@
+import React, { useState, useEffect } from "react";
 import './mypage.css';
 import Header from '../components/Header';
 import Mypa from "../components/mypage/Mypa";
 import Mysen from '../components/mypage/Mysen';
 import ProBlock from '../components/mypage/ProBlock';
+import Record from '../components/mypage/record';
+import Profile from '../components/mypage/profile';
 import ModalEdit from '../components/ModalEdit';
 import ModalEditsen from '../components/ModalEditSentence';
-import React, { useState, useEffect } from "react";
-import axios from 'axios';
-import Record from '../components/mypage/record';
-import Profile from '../components/mypage/profile'; // 네가 준 Profile 컴포넌트
+import axios from "axios";
 
 function Mypage() {
   const [showEditButtons, setShowEditButtons] = useState(false);
@@ -31,20 +31,16 @@ function Mypage() {
           headers: { Authorization: `Bearer ${token}` }
         });
         setStats(res.data);
-      } catch (err) {
-        console.error("독서 통계 불러오기 실패:", err);
-      }
+      } catch (err) { console.error(err); }
     };
 
     const fetchPages = async () => {
       try {
-        const res = await axios.get(`http://43.200.102.14:5000/api/user/pages/${userId}`, {
+        const res = await axios.get(`http://43.200.102.14:5000/api/mypage/user/${userId}/favorite-pages`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        setPages(res.data);
-      } catch (err) {
-        console.error("즐겨찾기 페이지 불러오기 실패:", err);
-      }
+        if (res.data.success) setPages(res.data.favoritePages);
+      } catch (err) { console.error(err); }
     };
 
     const fetchSentences = async () => {
@@ -53,9 +49,7 @@ function Mypage() {
           headers: { Authorization: `Bearer ${token}` }
         });
         setSentences(res.data);
-      } catch (err) {
-        console.error("즐겨찾기 문장 불러오기 실패:", err);
-      }
+      } catch (err) { console.error(err); }
     };
 
     fetchStats();
@@ -63,15 +57,43 @@ function Mypage() {
     fetchSentences();
   }, [token, userId]);
 
+  const refreshPages = async () => {
+    try {
+      const res = await axios.get(`http://43.200.102.14:5000/api/mypage/user/${userId}/favorite-pages`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.data.success) setPages(res.data.favoritePages);
+    } catch (err) { console.error(err); }
+  };
+
+  const handleDeletePage = async (favPageId) => {
+    if (!window.confirm("정말 삭제하시겠습니까?")) return;
+    try {
+      const res = await axios.delete(
+        `http://43.200.102.14:5000/api/mypage/favorite-page/${favPageId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (res.data.success) setPages(prev => prev.filter(p => p.favPageId !== favPageId));
+    } catch (err) { console.error(err); alert("삭제 실패"); }
+  };
+
+  const handleDeleteSentence = async (favQuoteId) => {
+    if (!window.confirm("정말 삭제하시겠습니까?")) return;
+    try {
+      const res = await axios.delete(
+        `http://43.200.102.14:5000/api/mypage/favorite-quote/${favQuoteId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (res.data.success) setSentences(prev => prev.filter(s => s.id !== favQuoteId));
+    } catch (err) { console.error(err); alert("삭제 실패"); }
+  };
+
   return (
     <>
       <Header />
-
       <main className='Mypage-all'>
         <div className="my_top_container">
-          {/* 로그인한 계정 프로필 */}
           <Profile />
-
           <div className="my_top-right-container">
             <ProBlock title="최대 연속으로" day="읽은 날 수" count={stats?.readingStreak || 0}/>
             <ProBlock title="총 모은" day="도장 개수" count={stats?.totalBooks || 0}/>
@@ -86,12 +108,8 @@ function Mypage() {
         </div>
 
         <div className='button-container'>
-          <button className='modify-button' onClick={() => setShowEditButtons(!showEditButtons)}>
-            추가하기
-          </button>
-          <button className='modify-button' onClick={() => setShowEditButtons(!showEditButtons)}>
-            삭제하기
-          </button>
+          <button className='modify-button' onClick={() => setShowModal(true)}>추가하기</button>
+          <button className='modify-button' onClick={() => setShowEditButtons(!showEditButtons)}>삭제하기</button>
         </div>
 
         <div className="my_fa-page-container-container">
@@ -101,9 +119,18 @@ function Mypage() {
               <div className="my_fa-page-title">
                 <div className="my-fa-page-title-real">즐겨찾기한 페이지</div>
               </div>
-              <div className="my_fa-page-bottom-container">
+              <div className="my_fa-page-bottom-container page-grid">
                 {pages.map(page => (
-                  <Mypa key={page.id} showEdit={showEditButtons} onEditClick={() => setShowSentenceModal(true)} {...page} />
+                  <Mypa
+                    key={page.favPageId}
+                    favPageId={page.favPageId}
+                    title={page.bookTitle}
+                    pageNumber={page.pageNumber}
+                    bookImage={page.coverImageUrl}
+                    createdAt={page.createdAt}
+                    showEdit={showEditButtons}
+                    onDelete={handleDeletePage}
+                  />
                 ))}
               </div>
             </div>
@@ -115,9 +142,15 @@ function Mypage() {
               <div className="my_fa-page-title">
                 <div className="my-fa-page-title-real">즐겨찾기한 문장</div>
               </div>
-              <div className="my_fa-page-bottom-container">
+              <div className="my_fa-page-bottom-container sentence-grid">
                 {sentences.map(sentence => (
-                  <Mysen key={sentence.id} showEdit={showEditButtons} onEditClick={() => setShowSentenceModal(true)} {...sentence} />
+                  <Mysen
+                    key={sentence.id}
+                    id={sentence.id}
+                    sentence={sentence.sentence}
+                    showEdit={showEditButtons}
+                    onDelete={handleDeleteSentence}
+                  />
                 ))}
               </div>
             </div>
@@ -125,9 +158,7 @@ function Mypage() {
         </div>
       </main>
 
-      {/* 페이지 모달 */}
-      {showModal && <ModalEdit onClose={() => setShowModal(false)} />}
-      {/* 문장 모달 */}
+      {showModal && <ModalEdit onClose={() => setShowModal(false)} refreshPages={refreshPages} />}
       {showSentenceModal && <ModalEditsen onClose={() => setShowSentenceModal(false)} />}
     </>
   );

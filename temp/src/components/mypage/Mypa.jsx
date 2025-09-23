@@ -1,39 +1,64 @@
-import Bookimg from "../mypage/bookImg.jpg";
 import ModifyIcon from './modify.svg';
 import './mypage.css';
 
-function Mypa({ showEdit, onEditClick }) {
+function Mypa({ showEdit, onEditClick, title, author, pageNumber, bookImage, createdAt, favPageId, onDelete }) {
   return (
     <div className="my-fa-page-each-container" style={{ position: "relative" }}>
       {showEdit && (
-        <button 
-          style={{
-            position: "absolute",
-            display: "flex",
-            justifyContent: "start",
-            top: "-20px",
-            left: "-15px",
-            zIndex: 10,
-            background: "none",
-            border: "none",
-            padding: 0,
-            zIndex: 9999
-          }}
-          onClick={onEditClick}
-        >
-          <img src={ModifyIcon} alt="수정" style={{ width: "20px", height: "20px" }} />
-        </button>
+        <>
+          <button 
+            style={{
+              position: "absolute",
+              top: "-20px",
+              left: "-15px",
+              background: "none",
+              border: "none",
+              padding: 0,
+              zIndex: 9999
+            }}
+            onClick={onEditClick}
+          >
+            <img src={ModifyIcon} alt="수정" style={{ width: "20px", height: "20px" }} />
+          </button>
+
+          <button
+            style={{
+              position: "absolute",
+              top: "-10px",
+              right: "-10px",
+              background: "none",
+              border: "none",
+              color: "red",
+              fontSize: "18px",
+              cursor: "pointer",
+              zIndex: 9999
+            }}
+            onClick={() => onDelete(favPageId)}
+          >
+            🗑️
+          </button>
+        </>
       )}
-      <div className="index">100p</div>
-      <div><img className="main__book-img" src={Bookimg} alt="" /></div>
+
+      <div className="index">{pageNumber}p</div>
+
+      <div>
+        {bookImage ? (
+          <img className="main__book-img" src={bookImage} alt="책표지" />
+        ) : (
+          <div className="main__book-img placeholder">이미지 없음</div>
+        )}
+      </div>
+
       <div className="my-fa-page_books-texts">
-        <div className="my-fa-page-book-title">트로피컬 나이트</div>
-        <div className="my-fa-page-book-text">조예은</div>
-        <div className="my-fa-page-book-text">저장한 날짜: 2025-07-15</div>
+        <div className="my-fa-page-book-title">{title}</div>
+        <div className="my-fa-page-book-text">{author}</div>
+        <div className="my-fa-page-book-text">
+          저장한 날짜: {createdAt ? createdAt : new Date().toISOString().split('T')[0]}
+        </div>
       </div>
     </div>
   );
 }
 
 export default Mypa;
-

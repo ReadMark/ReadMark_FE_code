@@ -1,0 +1,73 @@
+.main__books-texts {
+  margin-left: 3px;
+  margin-top: 4px;
+}
+
+.main__book-title {
+  font-size: 20px;
+}
+
+.main__books-container {
+  display: grid;
+  grid-template-columns: repeat(4, 220px); /* 한 줄에 4개 */
+  justify-content: center; 
+  gap: 25px 80px; 
+  margin: 60px auto 100px auto;
+}
+
+
+.main__book-each {
+  width: 220px;
+  margin-bottom: 20px;
+  border: 1px solid rgb(202, 202, 202);
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 3px 3px 8px rgba(0,0,0,0.3);
+  transition: border 0.2s;
+}
+
+
+.main__book-sub-text {
+  color: rgb(85, 85, 85);
+  font-size: 16px;
+}
+
+.main__book-img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 10px;
+  background-color: rgb(255, 255, 255);
+}
+
+.main__book-img-container {
+  display: flex;
+  justify-content: center;
+}
+
+.main_img-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 30px;
+  font-weight: 5000;
+  text-shadow: 1px 1px 1px black;
+}
+
+.section-top {
+  margin-top: 50px;
+}
+
+section {
+  margin-top: 30px;
+  background-color: rgb(255, 255, 255);
+}
+
+.main__books-state {
+  margin-bottom: 20px;
+}
+
+.main__search-bar {
+  margin-top: 12px;
+}
