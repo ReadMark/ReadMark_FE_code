@@ -2,6 +2,8 @@ import ModifyIcon from './modify.svg';
 import './mypage.css';
 
 function Mypa({ showEdit, onEditClick, title, author, pageNumber, bookImage, createdAt, favPageId, onDelete }) {
+  const serverUrl = "http://43.200.102.14:5000"; // 서버 주소 추가
+
   return (
     <div className="my-fa-page-each-container" style={{ position: "relative" }}>
       {showEdit && (
@@ -44,7 +46,11 @@ function Mypa({ showEdit, onEditClick, title, author, pageNumber, bookImage, cre
 
       <div>
         {bookImage ? (
-          <img className="main__book-img" src={bookImage} alt="책표지" />
+          <img
+            className="main__book-img"
+            src={bookImage.startsWith("http") ? bookImage : `${serverUrl}${bookImage}`}
+            alt={title}
+          />
         ) : (
           <div className="main__book-img placeholder">이미지 없음</div>
         )}

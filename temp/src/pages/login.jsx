@@ -29,7 +29,8 @@ function Login() {
         alert(data.message);
 
         // ✅ 사용자 정보 localStorage에 저장
-        const { userId, username, name, email, profileImageUrl, createdAt } = data.data;
+        const { userId, username, name, email, profileImageUrl, createdAt, token } = data.data;
+        localStorage.setItem("token", token); // 토큰 저장
         localStorage.setItem("userId", userId);
         localStorage.setItem("username", username);
         localStorage.setItem("name", name);
@@ -37,7 +38,7 @@ function Login() {
         localStorage.setItem("profileImage", profileImageUrl ? `http://43.200.102.14:5000${profileImageUrl}` : "");
         localStorage.setItem("createdAt", createdAt);
 
-        navigate("/"); // 로그인 성공 후 메인 페이지 이동
+        navigate("/mypage"); // 로그인 성공 후 Mypage 이동
       } else {
         alert(`로그인 실패: ${data.message || "알 수 없는 오류"}`);
       }
@@ -51,7 +52,6 @@ function Login() {
     <main className="Join-all">
       <div className="login_container">
         <div className="title">Read Mark</div>
-
         <div className="sections">
           <JoinEach
             title="아이디"
@@ -66,13 +66,9 @@ function Login() {
             onChange={(e) => handleChange("password", e.target.value)}
           />
         </div>
-
         <div className="login_button-container">
-          <div className="login_button">
-            <button onClick={handleLogin}>로그인</button>
-          </div>
+          <button onClick={handleLogin}>로그인</button>
         </div>
-
         <div className="bottom_container">
           <div className="front">계정이 없으신가요?</div>
           <Link to="/join">
