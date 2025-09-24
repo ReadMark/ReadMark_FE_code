@@ -2,39 +2,21 @@ import ModifyIcon from './modify.svg';
 import './mypage.css';
 
 function Mypa({ showEdit, onEditClick, title, author, pageNumber, bookImage, createdAt, favPageId, onDelete }) {
-  const serverUrl = "http://43.200.102.14:5000"; // 서버 주소 추가
+  const serverUrl = "http://43.200.102.14:5000"; // 서버 주소
 
   return (
     <div className="my-fa-page-each-container" style={{ position: "relative" }}>
       {showEdit && (
         <>
           <button 
-            style={{
-              position: "absolute",
-              top: "-20px",
-              left: "-15px",
-              background: "none",
-              border: "none",
-              padding: 0,
-              zIndex: 9999
-            }}
+            className="edit-btn"
             onClick={onEditClick}
           >
-            <img src={ModifyIcon} alt="수정" style={{ width: "20px", height: "20px" }} />
+            <img src={ModifyIcon} alt="수정" className="edit-icon"/>
           </button>
 
           <button
-            style={{
-              position: "absolute",
-              top: "-10px",
-              right: "-10px",
-              background: "none",
-              border: "none",
-              color: "red",
-              fontSize: "18px",
-              cursor: "pointer",
-              zIndex: 9999
-            }}
+            className="delete-btn"
             onClick={() => onDelete(favPageId)}
           >
             🗑️
@@ -44,7 +26,7 @@ function Mypa({ showEdit, onEditClick, title, author, pageNumber, bookImage, cre
 
       <div className="index">{pageNumber}p</div>
 
-      <div>
+      <div className="book-image-wrapper">
         {bookImage ? (
           <img
             className="main__book-img"

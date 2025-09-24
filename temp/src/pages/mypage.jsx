@@ -14,16 +14,15 @@ function Mypage() {
   const [showEditButtons, setShowEditButtons] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showSentenceModal, setShowSentenceModal] = useState(false);
+  const [editingSentence, setEditingSentence] = useState(null);
 
   const [stats, setStats] = useState(null);
   const [pages, setPages] = useState(null);
   const [sentences, setSentences] = useState(null);
 
-  // ✅ localStorage에서 토큰과 userId 가져오기
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
 
-  // 로그인 안 되어있으면 로그인 페이지로 이동
   useEffect(() => {
     if (!token || !userId || userId === "undefined") {
       alert("로그인 후 접근하세요.");
@@ -145,8 +144,8 @@ function Mypage() {
         </div>
 
         <div className='button-container'>
-          <button className='modify-button' onClick={() => setShowModal(true)}>즐겨찾기 페이지 추가</button>
-          <button className='modify-button' onClick={() => setShowSentenceModal(true)}>즐겨찾기 문장 추가</button>
+          <button className='modify-button' onClick={() => setShowModal(true)}>페이지 추가</button>
+          <button className='modify-button' onClick={() => { setEditingSentence(null); setShowSentenceModal(true); }}>문장 추가</button>
           <button className='modify-button' onClick={() => setShowEditButtons(!showEditButtons)}>삭제하기</button>
         </div>
 
@@ -180,10 +179,13 @@ function Mypage() {
                 sentences.map(sentence => (
                   <Mysen
                     key={sentence.favQuoteId}
-                    id={sentence.favQuoteId}
-                    sentence={sentence.content}
+                    sentenceData={sentence}
                     showEdit={showEditButtons}
                     onDelete={handleDeleteSentence}
+                    onEditClick={(data) => {
+                      setEditingSentence(data);
+                      setShowSentenceModal(true);
+                    }}
                   />
                 ))
               }
@@ -193,7 +195,13 @@ function Mypage() {
       </main>
 
       {showModal && <ModalEdit onClose={() => setShowModal(false)} refreshPages={refreshPages} />}
-      {showSentenceModal && <ModalEditsen onClose={() => setShowSentenceModal(false)} refreshSentences={refreshSentences} />}
+      {showSentenceModal && 
+        <ModalEditsen
+          onClose={() => { setShowSentenceModal(false); setEditingSentence(null); }}
+          refreshSentences={refreshSentences}
+          favQuote={editingSentence} // 편집할 데이터 전달
+        />
+      }
     </>
   );
 }
