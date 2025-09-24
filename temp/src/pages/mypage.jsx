@@ -154,7 +154,7 @@ function Mypage() {
             <div className="my-fa-page-title-real">즐겨찾기한 페이지</div>
             <div className="my_fa-page-bottom-container page-grid">
               {pages === null ? <p>페이지 로딩 중...</p> :
-                pages.length === 0 ? <p>즐겨찾기한 페이지가 없습니다.</p> :
+                pages.length === 0 ? <div className="riri">즐겨찾기한 페이지가 없습니다.</div> :
                 pages.map(page => (
                   <Mypa
                     key={page.favPageId}
@@ -175,7 +175,7 @@ function Mypage() {
             <div className="my-fa-page-title-real">즐겨찾기한 문장</div>
             <div className="my_fa-page-bottom-container sentence-grid">
               {sentences === null ? <p>문장 로딩 중...</p> :
-                sentences.length === 0 ? <p>즐겨찾기한 문장이 없습니다.</p> :
+                sentences.length === 0 ? <div className="riri">즐겨찾기한 문장이 없습니다.</div> :
                 sentences.map(sentence => (
                   <Mysen
                     key={sentence.favQuoteId}

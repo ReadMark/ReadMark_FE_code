@@ -281,6 +281,11 @@
     border-radius: 10px;
 }
 
+.riri{
+    position: absolute;
+    margin-left: 8px;
+}
+
 
 .my_fa-page-bottom-container {
   display: flex;
