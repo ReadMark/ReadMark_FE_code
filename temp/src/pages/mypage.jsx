@@ -25,10 +25,17 @@ function Mypage() {
   const rawUserId = localStorage.getItem("userId");
   const userId = rawUserId ? rawUserId.replace(/^["']+|["']+$/g, "").trim() : rawUserId;
 
+  // 로그아웃 함수
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    window.location.replace("/login"); // 뒤로가기 방지
+  };
+
   useEffect(() => {
     if (!token || !userId || userId === "undefined") {
       alert("로그인 후 접근하세요.");
-      window.location.href = "/login";
+      window.location.replace("/login"); // 뒤로가기 방지
       return;
     }
 
@@ -93,7 +100,6 @@ function Mypage() {
     }
   };
 
-  // ⭐수정 포인트: 새 문장 추가 시, 배열 뒤에 push하도록 변경
   const refreshSentences = async (newSentence) => {
     if (newSentence) {
       setSentences(prev => prev ? [...prev, newSentence] : [newSentence]);
@@ -187,45 +193,43 @@ function Mypage() {
           </div>
 
          <div className="my_fa-page-container my-fa-page-right">
-  <div className="my-fa-page-title-real">즐겨찾기한 문장</div>
-  <div className="my_fa-page-bottom-container sentence-grid">
-    {sentences === null ? (
-      <p>문장 로딩 중...</p>
-    ) : sentences.length === 0 ? (
-      <div className="riri">즐겨찾기한 문장이 없습니다.</div>
-    ) : (
-      sentences
-        .filter(sentence => sentence && sentence.favQuoteId) // 안전 필터
-        .map(sentence => (
-          <Mysen
-            key={sentence.favQuoteId}
-            sentenceData={sentence}
-            showEdit={false}
-            deleteMode={deleteMode}
-            onDelete={handleDeleteSentence}
-            onEditClick={(data) => {
-              setEditingSentence(data);
-              setShowSentenceModal(true);
-            }}
-          />
-        ))
-    )}
-  </div>
-</div>
-
+          <div className="my-fa-page-title-real">즐겨찾기한 문장</div>
+          <div className="my_fa-page-bottom-container sentence-grid">
+            {sentences === null ? (
+              <p>문장 로딩 중...</p>
+            ) : sentences.length === 0 ? (
+              <div className="riri">즐겨찾기한 문장이 없습니다.</div>
+            ) : (
+              sentences
+                .filter(sentence => sentence && sentence.favQuoteId)
+                .map(sentence => (
+                  <Mysen
+                    key={sentence.favQuoteId}
+                    sentenceData={sentence}
+                    showEdit={false}
+                    deleteMode={deleteMode}
+                    onDelete={handleDeleteSentence}
+                    onEditClick={(data) => {
+                      setEditingSentence(data);
+                      setShowSentenceModal(true);
+                    }}
+                  />
+                ))
+            )}
+          </div>
         </div>
-      </main>
+      </div>
+    </main>
 
-      {showModal && <ModalEdit onClose={() => setShowModal(false)} refreshPages={refreshPages} />}
-      {showSentenceModal &&
-        <ModalEditsen
-          onClose={() => { setShowSentenceModal(false); setEditingSentence(null); }}
-          setSentences={setSentences} 
-          favQuote={editingSentence}
-        />
-      }
-
-    </>
+    {showModal && <ModalEdit onClose={() => setShowModal(false)} refreshPages={refreshPages} />}
+    {showSentenceModal &&
+      <ModalEditsen
+        onClose={() => { setShowSentenceModal(false); setEditingSentence(null); }}
+        setSentences={setSentences} 
+        favQuote={editingSentence}
+      />
+    }
+  </>
   );
 }
 
