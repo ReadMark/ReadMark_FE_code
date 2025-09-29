@@ -32,6 +32,43 @@
     width: 140px;
 }
 
+
+/* 삭제 버튼 숨김 & 호버 시 표시 */
+.my-fa-page-each-container {
+  position: relative;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: none; /* 기본 숨김 */
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+
+.my-fa-page-each-container:hover .delete-btn {
+  display: block; /* 호버 시 나타남 */
+}
+
+.edit-btn {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+
 .my_top-text{
     font-size: 19px;
     color: gray;
@@ -248,14 +285,30 @@
 .my_fa-page-bottom-container.page-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 5px;
 }
+
+
 
 .my_fa-page-bottom-container.sentence-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
+  border: 1px solid black;
+  width: 100%;
 }
+
+/* 삭제 모드일 때 빨간 테두리 + 커서 */
+.delete-hover {
+  border: 2px solid red;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* 삭제 모드 아닐 때 호버 효과 유지 */
+.my-fa-page-each-container:not(.delete-hover):hover {
+  box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+}
+
 
 .delete-btn {
   position: absolute;

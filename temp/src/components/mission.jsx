@@ -1,21 +1,33 @@
 import MissionEach from './missionEach';
 import './misson.css';
-import FirstImg from '../assets/missionF.svg'
+import FirstImg from '../assets/missionF.svg';
 import SecondImg from '../assets/missionS.svg';
 
 function Mission() {
+  // 현재 요일 가져오기 (0: 일요일, 1: 월요일, ..., 6: 토요일)
+  const today = new Date().getDay();
+
+  // 요일별 미션 문장
+  const missions = {
+    1: "책 20p 이상 읽기",        // 월요일
+    2: "하루 15분 집중 독서",     // 화요일
+    3: "수요일: 책 10p 이상 읽고 메모하기", // 수요일
+    4: "목요일: 마음에 남는 문장 3개 기록", // 목요일
+    5: "금요일: 책 30p 도전!",             // 금요일
+    6: "토요일: 자유롭게 독서하기",         // 토요일
+    0: "일요일: 편하게 책 읽기"             // 일요일
+  };
+
+  const todayMission = missions[today] || "오늘의 미션을 즐기세요!";
+
   return (
     <div className='mission_container'>
       <div className='MissonTitle'>오늘의 미션</div>
       <div className='mission-each'>
-        <MissionEach Img={FirstImg} mission="책 20p 이상 읽기" />
-      </div>
-      <div className='mission-each'>
-        <MissionEach Img={SecondImg} mission="20분 독서" />
+        <MissionEach Img={FirstImg} mission={todayMission} />
       </div>
     </div>
   );
 }
-
 
 export default Mission;

@@ -9,19 +9,21 @@ import Profile from '../components/mypage/profile';
 import ModalEdit from '../components/ModalEdit';
 import ModalEditsen from '../components/ModalEditSentence';
 import axios from "axios";
+import DefaultBookImg from '../assets/bookImg.jpg';
 
 function Mypage() {
-  const [showEditButtons, setShowEditButtons] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showSentenceModal, setShowSentenceModal] = useState(false);
   const [editingSentence, setEditingSentence] = useState(null);
+  const [deleteMode, setDeleteMode] = useState(false);
 
   const [stats, setStats] = useState(null);
   const [pages, setPages] = useState(null);
   const [sentences, setSentences] = useState(null);
 
   const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("userId");
+  const rawUserId = localStorage.getItem("userId");
+  const userId = rawUserId ? rawUserId.replace(/^["']+|["']+$/g, "").trim() : rawUserId;
 
   useEffect(() => {
     if (!token || !userId || userId === "undefined") {
@@ -32,10 +34,19 @@ function Mypage() {
 
     const fetchStats = async () => {
       try {
-        const res = await axios.get(`http://43.200.102.14:5000/api/image/stats/${userId}`, {
+        const res = await axios.get(`http://43.200.102.14:5000/api/mypage/user/${userId}/stats`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        setStats(res.data);
+        if (res.data.success) {
+          setStats({
+            readingStreak: res.data.stats.maxConsecutiveDays,
+            totalBooks: res.data.stats.totalStamps,
+            totalDays: res.data.stats.totalReadingDays,
+            readingBooks: res.data.stats.nowReadingCount,
+            wishlistBooks: res.data.stats.wannaReadCount,
+            finishedBooks: res.data.stats.readDoneCount
+          });
+        }
       } catch (err) {
         console.error("Stats fetch error:", err);
       }
@@ -71,7 +82,6 @@ function Mypage() {
   }, [token, userId]);
 
   const refreshPages = async () => {
-    if (!token || !userId || userId === "undefined") return;
     try {
       const res = await axios.get(`http://43.200.102.14:5000/api/mypage/user/${userId}/favorite-pages`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -83,8 +93,12 @@ function Mypage() {
     }
   };
 
-  const refreshSentences = async () => {
-    if (!token || !userId || userId === "undefined") return;
+  // ⭐수정 포인트: 새 문장 추가 시, 배열 뒤에 push하도록 변경
+  const refreshSentences = async (newSentence) => {
+    if (newSentence) {
+      setSentences(prev => prev ? [...prev, newSentence] : [newSentence]);
+      return;
+    }
     try {
       const res = await axios.get(`http://43.200.102.14:5000/api/mypage/user/${userId}/favorite-quotes`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -98,7 +112,6 @@ function Mypage() {
 
   const handleDeletePage = async (favPageId) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
-    if (!token || !userId || userId === "undefined") return;
     try {
       const res = await axios.delete(`http://43.200.102.14:5000/api/mypage/favorite-page/${favPageId}`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -112,7 +125,6 @@ function Mypage() {
 
   const handleDeleteSentence = async (favQuoteId) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
-    if (!token || !userId || userId === "undefined") return;
     try {
       const res = await axios.delete(`http://43.200.102.14:5000/api/mypage/favorite-quote/${favQuoteId}`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -146,7 +158,9 @@ function Mypage() {
         <div className='button-container'>
           <button className='modify-button' onClick={() => setShowModal(true)}>페이지 추가</button>
           <button className='modify-button' onClick={() => { setEditingSentence(null); setShowSentenceModal(true); }}>문장 추가</button>
-          <button className='modify-button' onClick={() => setShowEditButtons(!showEditButtons)}>삭제하기</button>
+          <button className='modify-button' onClick={() => setDeleteMode(prev => !prev)}>
+            {deleteMode ? "확인" : "삭제"}
+          </button>
         </div>
 
         <div className="my_fa-page-container-container">
@@ -161,47 +175,56 @@ function Mypage() {
                     favPageId={page.favPageId}
                     title={page.bookTitle}
                     pageNumber={page.pageNumber}
-                    bookImage={page.coverImageUrl}
+                    bookImage={page.coverImageUrl || DefaultBookImg}
                     createdAt={page.createdAt}
-                    showEdit={showEditButtons}
+                    deleteMode={deleteMode}
                     onDelete={handleDeletePage}
+                    onEditClick={() => {/* 필요시 수정 */}}
                   />
                 ))
               }
             </div>
           </div>
 
-          <div className="my_fa-page-container my-fa-page-right">
-            <div className="my-fa-page-title-real">즐겨찾기한 문장</div>
-            <div className="my_fa-page-bottom-container sentence-grid">
-              {sentences === null ? <p>문장 로딩 중...</p> :
-                sentences.length === 0 ? <div className="riri">즐겨찾기한 문장이 없습니다.</div> :
-                sentences.map(sentence => (
-                  <Mysen
-                    key={sentence.favQuoteId}
-                    sentenceData={sentence}
-                    showEdit={showEditButtons}
-                    onDelete={handleDeleteSentence}
-                    onEditClick={(data) => {
-                      setEditingSentence(data);
-                      setShowSentenceModal(true);
-                    }}
-                  />
-                ))
-              }
-            </div>
-          </div>
+         <div className="my_fa-page-container my-fa-page-right">
+  <div className="my-fa-page-title-real">즐겨찾기한 문장</div>
+  <div className="my_fa-page-bottom-container sentence-grid">
+    {sentences === null ? (
+      <p>문장 로딩 중...</p>
+    ) : sentences.length === 0 ? (
+      <div className="riri">즐겨찾기한 문장이 없습니다.</div>
+    ) : (
+      sentences
+        .filter(sentence => sentence && sentence.favQuoteId) // 안전 필터
+        .map(sentence => (
+          <Mysen
+            key={sentence.favQuoteId}
+            sentenceData={sentence}
+            showEdit={false}
+            deleteMode={deleteMode}
+            onDelete={handleDeleteSentence}
+            onEditClick={(data) => {
+              setEditingSentence(data);
+              setShowSentenceModal(true);
+            }}
+          />
+        ))
+    )}
+  </div>
+</div>
+
         </div>
       </main>
 
       {showModal && <ModalEdit onClose={() => setShowModal(false)} refreshPages={refreshPages} />}
-      {showSentenceModal && 
+      {showSentenceModal &&
         <ModalEditsen
           onClose={() => { setShowSentenceModal(false); setEditingSentence(null); }}
-          refreshSentences={refreshSentences}
-          favQuote={editingSentence} // 편집할 데이터 전달
+          setSentences={setSentences} 
+          favQuote={editingSentence}
         />
       }
+
     </>
   );
 }

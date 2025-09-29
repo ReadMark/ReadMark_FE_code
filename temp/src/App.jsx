@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header.jsx';
 import MainPage from './pages/Mainpage.jsx';
-import Mypage from './pages/Mypage.jsx';
+import Mypage from './pages/mypage.jsx';
 import WantPage from './pages/want.jsx';
 import DonePage from './pages/done.jsx';
 import Join from './pages/Join.jsx';

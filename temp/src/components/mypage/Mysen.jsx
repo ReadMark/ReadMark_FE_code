@@ -1,50 +1,48 @@
 import React from "react";
-import ModifyIcon from './modify.svg';
+import './mypage.css';
+import DefaultBookImg from '../../assets/bookImg.jpg';
 
-function Mysen({ sentenceData, showEdit, onDelete, onEditClick }) {
-  const {
-    favQuoteId,
-    bookTitle,
-    content,
-    pageNumber,
-    coverImageUrl,
-    createdAt
-  } = sentenceData;
+function Mysen({ sentenceData, deleteMode, onDelete }) {
+  console.log("sentenceData", sentenceData);
+  const { favQuoteId, bookTitle, content, pageNumber, coverImageUrl, createdAt } = sentenceData;
+  const serverUrl = "http://43.200.102.14:5000";
+
+  const handleClick = () => {
+    if (deleteMode && window.confirm("정말 삭제하시겠습니까?")) {
+      onDelete(favQuoteId);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toISOString().split("T")[0];
+  };
+
+  const imageSrc = coverImageUrl
+    ? (coverImageUrl.startsWith("http") ? coverImageUrl : `${serverUrl}${coverImageUrl}`)
+    : DefaultBookImg;
 
   return (
-    <div className="my-fa-page-each-container ma-fa-moon-container" style={{ position: "relative" }}>
-      {showEdit && (
-        <div style={{ position: "absolute", top: "-20px", left: "-15px", display: "flex", gap: "5px", zIndex: 10 }}>
-          <button
-            style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
-            onClick={() => onEditClick(sentenceData)}
-          >
-            <img src={ModifyIcon} alt="수정" style={{ width: "20px", height: "20px" }} />
-          </button>
-          <button
-            style={{ background: "none", border: "none", padding: 0, cursor: "pointer", color: "red", fontWeight: "bold" }}
-            onClick={() => onDelete(favQuoteId)}
-          >
-            삭제
-          </button>
-        </div>
-      )}
-
-      <div>
+    <div className={`my-fa-page-each-container ${deleteMode ? 'delete-mode' : ''}`} onClick={handleClick}>
+      <div className="book-image-wrapper">
         <img
-          className="main__book-img my-fa-book-img"
-          src={coverImageUrl || "/bookImg.jpg"}
-          alt={bookTitle}
+          className="my-fa-book-img"
+          src={imageSrc}
+          alt={bookTitle || "책 표지"}
+          onError={(e) => (e.target.src = DefaultBookImg)}
         />
       </div>
 
       <div className="my-fa-page_books-texts">
-        <div className="my-fa-page-book-title my-fa-page-moon-title">{bookTitle}</div>
+        <div className="my-fa-page-book-title">{bookTitle}</div>
         <div className="my-fa-page-book-text-center">
           <div className="my-fa-page-moon-text page">p{pageNumber}</div>
           <div className="my-fa-page-moon-text">{content}</div>
         </div>
-        <div className="my-fa-page-moon-date">저장한 날짜: {createdAt}</div>
+        <div className="my-fa-page-moon-date">
+          저장한 날짜: {formatDate(createdAt)}
+        </div>
       </div>
     </div>
   );

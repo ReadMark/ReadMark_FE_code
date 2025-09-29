@@ -1,29 +1,20 @@
-import ModifyIcon from './modify.svg';
+import React from "react";
 import './mypage.css';
 
-function Mypa({ showEdit, onEditClick, title, author, pageNumber, bookImage, createdAt, favPageId, onDelete }) {
-  const serverUrl = "http://43.200.102.14:5000"; // 서버 주소
+function Mypa({ deleteMode, title, author, pageNumber, bookImage, createdAt, favPageId, onDelete }) {
+  const serverUrl = "http://43.200.102.14:5000";
+
+  const handleClick = () => {
+    if (deleteMode && window.confirm("정말 삭제하시겠습니까?")) {
+      onDelete(favPageId);
+    }
+  };
 
   return (
-    <div className="my-fa-page-each-container" style={{ position: "relative" }}>
-      {showEdit && (
-        <>
-          <button 
-            className="edit-btn"
-            onClick={onEditClick}
-          >
-            <img src={ModifyIcon} alt="수정" className="edit-icon"/>
-          </button>
-
-          <button
-            className="delete-btn"
-            onClick={() => onDelete(favPageId)}
-          >
-            🗑️
-          </button>
-        </>
-      )}
-
+    <div
+      className={`my-fa-page-each-container ${deleteMode ? 'delete-mode' : ''}`}
+      onClick={handleClick}
+    >
       <div className="index">{pageNumber}p</div>
 
       <div className="book-image-wrapper">
