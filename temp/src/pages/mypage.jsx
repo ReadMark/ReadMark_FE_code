@@ -155,7 +155,7 @@ function Mypage() {
           <Record title="다 읽은 책" count={stats?.finishedBooks || 0}/>
         </div>
 
-        <div className='button-container'>
+        <div className='button-containers'>
           <button className='modify-button' onClick={() => setShowModal(true)}>페이지 추가</button>
           <button className='modify-button' onClick={() => { setEditingSentence(null); setShowSentenceModal(true); }}>문장 추가</button>
           <button className='modify-button' onClick={() => setDeleteMode(prev => !prev)}>

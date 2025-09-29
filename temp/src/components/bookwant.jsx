@@ -1,25 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import './book-each.css';
 
 function Bookwant({ userBookId, title, author, coverImage, onDelete, deleteMode }) {
-  const [hover, setHover] = useState(false);
 
-  // 클릭 시 삭제 요청만 호출 (확인은 WantPage에서)
   const handleClick = () => {
     if (deleteMode) {
-      onDelete(userBookId);
+      // 삭제 모드일 때만 확인창
+      if (window.confirm("정말 삭제하시겠습니까?")) {
+        onDelete(userBookId);
+      }
     }
   };
 
   return (
     <div
-      className="main__book-each"
-      style={{
-        border: hover && deleteMode ? "2px solid red" : "1px solid #ccc",
-        cursor: deleteMode ? "pointer" : "default",
-      }}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+      className={`main__book-each ${deleteMode ? 'delete-hover' : ''}`}
       onClick={handleClick}
     >
       <div className="main__book-img-container">
@@ -27,6 +22,7 @@ function Bookwant({ userBookId, title, author, coverImage, onDelete, deleteMode 
           className="main__book-img"
           src={coverImage ? `http://43.200.102.14:5000${coverImage}` : "/default-book.jpg"}
           alt={title}
+          onError={(e) => e.target.src = "/default-book.jpg"}
         />
       </div>
       <div className="main__books-texts">

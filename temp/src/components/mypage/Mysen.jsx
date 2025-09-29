@@ -7,10 +7,11 @@ function Mysen({ sentenceData, deleteMode, onDelete }) {
   const serverUrl = "http://43.200.102.14:5000";
 
   const handleClick = () => {
-    if (deleteMode && window.confirm("정말 삭제하시겠습니까?")) {
-      onDelete(favQuoteId);
+    if (deleteMode) {
+      onDelete(favQuoteId); 
     }
   };
+
 
   const formatDate = (dateString) => {
     if (!dateString) return "";

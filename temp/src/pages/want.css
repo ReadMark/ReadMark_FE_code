@@ -16,6 +16,8 @@
 }
 
 
+
+
 .main__book-each {
   width: 220px;
   margin-bottom: 20px;
@@ -45,6 +47,18 @@
   justify-content: center;
 }
 
+.delete-hover {
+  border: 2px solid red;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* 삭제 모드 아닐 때 호버 효과 유지 */
+.main__book-each:not(.delete-hover):hover {
+  box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+}
+
+
 .main_img-text {
   display: flex;
   justify-content: center;
@@ -70,4 +84,17 @@ section {
 
 .main__search-bar {
   margin-top: 12px;
+}
+
+.button-container{
+ flex-direction: column;
+ margin-top: 20px;
+ position: absolute;
+}
+
+.button{
+  color: rgb(0, 0, 0);
+  background-color: rgb(227, 227, 227);
+  margin-top: 5px;
+  margin-left: 10px;
 }
