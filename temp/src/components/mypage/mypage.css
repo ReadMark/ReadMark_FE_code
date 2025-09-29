@@ -21,6 +21,7 @@
   z-index: 9999;
 }
 
+
 .my_profile-container{
     padding: 50px;
     display: flex;
@@ -207,14 +208,28 @@
 
 }
 
+
+
 .ma-fa-moon-container{
     display: flex;
     flex-direction: row;
 }
 
+.pag-sen{
+  font-size: 20px;
+}
+
+.my-fa-page-book-tex-sen{
+  font-size: 30px;
+}
+
+.my-fa-page-book-title-sen{
+  font-size: 20px;
+}
+
 .ma-fa-moon-container {
     display: flex;
-    gap: 10px; /* 이미지와 텍스트 사이 간격 */
+    gap: 10px; 
 }
 .my_fa-page-container-container{
     width: 100%;
@@ -292,9 +307,41 @@
 
 .my_fa-page-bottom-container.sentence-grid {
   display: grid;
-  gap: 10px;
-  border: 1px solid black;
+  gap: 20px;
   width: 100%;
+}
+
+.my-fa-page-books-info{
+ width: 100%;
+  display: flex;        
+  flex-direction: column; 
+  justify-content: space-between;
+
+}
+
+.my-fa-page-each-container-sen{
+    margin-bottom: 40px;
+    width: 500px;
+    background-color: white;
+}
+
+.my-fa-page-each-container-sen{
+  margin: 0px 30px 0px;
+  border: 1px solid rgb(202, 202, 202);
+  padding: 10px 10px 8px;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 15px;
+  box-shadow: 3px 3px 8px rgba(0,0,0,0.3);
+  border-radius: 10px;
+}
+
+.my-fa-page-each-container-sen{
+  position: relative;
+}
+
+.my-fa-page-each-container-sen:not(.delete-hover):hover {
+  box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
 }
 
 /* 삭제 모드일 때 빨간 테두리 + 커서 */
@@ -304,10 +351,19 @@
   transition: 0.2s;
 }
 
+.main__book-imgs {
+    width: 220px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+}
+
 /* 삭제 모드 아닐 때 호버 효과 유지 */
 .my-fa-page-each-container:not(.delete-hover):hover {
   box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
 }
+
 
 
 .delete-btn {

@@ -3,7 +3,6 @@ import './mypage.css';
 import DefaultBookImg from '../../assets/bookImg.jpg';
 
 function Mysen({ sentenceData, deleteMode, onDelete }) {
-  console.log("sentenceData", sentenceData);
   const { favQuoteId, bookTitle, content, pageNumber, coverImageUrl, createdAt } = sentenceData;
   const serverUrl = "http://43.200.102.14:5000";
 
@@ -24,7 +23,7 @@ function Mysen({ sentenceData, deleteMode, onDelete }) {
     : DefaultBookImg;
 
   return (
-    <div className={`my-fa-page-each-container ${deleteMode ? 'delete-mode' : ''}`} onClick={handleClick}>
+    <div className={`my-fa-page-each-container-sen ${deleteMode ? 'delete-hover' : ''}`} onClick={handleClick}>
       <div className="book-image-wrapper">
         <img
           className="my-fa-book-img"
@@ -34,13 +33,12 @@ function Mysen({ sentenceData, deleteMode, onDelete }) {
         />
       </div>
 
-      <div className="my-fa-page_books-texts">
-        <div className="my-fa-page-book-title">{bookTitle}</div>
-        <div className="my-fa-page-book-text-center">
-          <div className="my-fa-page-moon-text page">p{pageNumber}</div>
-          <div className="my-fa-page-moon-text">{content}</div>
+      <div className="my-fa-page-books-info">
+        <div className="my-fa-page-book-title-sen">{bookTitle}</div>
+        <div className="my-fa-page-book-tex-sen">
+          <div className="pag-sen">p{pageNumber}</div> - {content}
         </div>
-        <div className="my-fa-page-moon-date">
+        <div className="my-fa-page-moon-date-sen">
           저장한 날짜: {formatDate(createdAt)}
         </div>
       </div>

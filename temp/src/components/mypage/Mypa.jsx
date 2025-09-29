@@ -20,12 +20,12 @@ function Mypa({ deleteMode, title, author, pageNumber, bookImage, createdAt, fav
       <div className="book-image-wrapper">
         {bookImage ? (
           <img
-            className="main__book-img"
+            className="main__book-imgs"
             src={bookImage.startsWith("http") ? bookImage : `${serverUrl}${bookImage}`}
             alt={title}
           />
         ) : (
-          <div className="main__book-img placeholder">이미지 없음</div>
+          <div className="main__book-imgs placeholder">이미지 없음</div>
         )}
       </div>
 
