@@ -25,17 +25,17 @@ function Mypage() {
   const rawUserId = localStorage.getItem("userId");
   const userId = rawUserId ? rawUserId.replace(/^["']+|["']+$/g, "").trim() : rawUserId;
 
-  // 로그아웃 함수
+  // 로그아웃
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userId");
-    window.location.replace("/login"); // 뒤로가기 방지
+    localStorage.clear();
+    window.location.replace("/login");
   };
 
+  // 페이지, 문장, stats 불러오기
   useEffect(() => {
     if (!token || !userId || userId === "undefined") {
       alert("로그인 후 접근하세요.");
-      window.location.replace("/login"); // 뒤로가기 방지
+      window.location.replace("/login");
       return;
     }
 
@@ -147,7 +147,7 @@ function Mypage() {
       <Header />
       <main className='Mypage-all'>
         <div className="my_top_container">
-          <Profile />
+          <Profile handleLogout={handleLogout} />
           <div className="my_top-right-container">
             <ProBlock title="최대 연속으로" day="읽은 날 수" count={stats?.readingStreak || 0}/>
             <ProBlock title="총 모은" day="도장 개수" count={stats?.totalBooks || 0}/>
@@ -185,24 +185,19 @@ function Mypage() {
                     createdAt={page.createdAt}
                     deleteMode={deleteMode}
                     onDelete={handleDeletePage}
-                    onEditClick={() => {/* 필요시 수정 */}}
+                    onEditClick={() => {}}
                   />
                 ))
               }
             </div>
           </div>
 
-         <div className="my_fa-page-container my-fa-page-right">
-          <div className="my-fa-page-title-real">즐겨찾기한 문장</div>
-          <div className="my_fa-page-bottom-container sentence-grid">
-            {sentences === null ? (
-              <p>문장 로딩 중...</p>
-            ) : sentences.length === 0 ? (
-              <div className="riri">즐겨찾기한 문장이 없습니다.</div>
-            ) : (
-              sentences
-                .filter(sentence => sentence && sentence.favQuoteId)
-                .map(sentence => (
+          <div className="my_fa-page-container my-fa-page-right">
+            <div className="my-fa-page-title-real">즐겨찾기한 문장</div>
+            <div className="my_fa-page-bottom-container sentence-grid">
+              {sentences === null ? <p>문장 로딩 중...</p> :
+                sentences.length === 0 ? <div className="riri">즐겨찾기한 문장이 없습니다.</div> :
+                sentences.filter(s => s && s.favQuoteId).map(sentence => (
                   <Mysen
                     key={sentence.favQuoteId}
                     sentenceData={sentence}
@@ -215,21 +210,19 @@ function Mypage() {
                     }}
                   />
                 ))
-            )}
+              }
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
 
-    {showModal && <ModalEdit onClose={() => setShowModal(false)} refreshPages={refreshPages} />}
-    {showSentenceModal &&
-      <ModalEditsen
+      {showModal && <ModalEdit onClose={() => setShowModal(false)} refreshPages={refreshPages} />}
+      {showSentenceModal && <ModalEditsen
         onClose={() => { setShowSentenceModal(false); setEditingSentence(null); }}
-        setSentences={setSentences} 
+        setSentences={setSentences}
         favQuote={editingSentence}
-      />
-    }
-  </>
+      />}
+    </>
   );
 }
 

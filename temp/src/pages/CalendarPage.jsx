@@ -2,7 +2,6 @@ import CalendarP from '../components/calendar';
 import Mission from '../components/mission'; 
 import './CalendarPage.css';
 import Header from '../components/Header';
-import React from 'react';
 
 function CalendarPage() {
   return (

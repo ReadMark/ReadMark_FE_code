@@ -15,7 +15,7 @@ function Login() {
     try {
       const res = await fetch("http://43.200.102.14:5000/api/users/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" }, 
         body: JSON.stringify({
           username: form.username,
           password: form.password

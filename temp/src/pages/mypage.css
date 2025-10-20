@@ -313,6 +313,8 @@
     pointer-events: none;
 }
 
+
+
 /* 삭제 버튼 호버 시 나타나도록 */
 .delete-btn {
     position: absolute;
@@ -327,7 +329,7 @@
 
 .button-containers{
     display: flex;
-    
+
 }
 
 

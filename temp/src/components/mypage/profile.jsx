@@ -7,16 +7,16 @@ function Profile() {
   const navigate = useNavigate();
   const [profileImage, setProfileImage] = useState(profileDefault);
 
-  // localStorage에서 로그인한 사용자 정보 가져오기
   const username = localStorage.getItem("username");
   const name = localStorage.getItem("name");
   const email = localStorage.getItem("email");
+  const rawUserId = localStorage.getItem("userId");
+  const userId = rawUserId ? rawUserId.replace(/^["']+|["']+$/g, "").trim() : "없음";
 
-  // 페이지 접근 시 로그인 체크
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate("/login", { replace: true }); // 뒤로가기 방지
+      navigate("/login", { replace: true });
     }
   }, [navigate]);
 
@@ -26,16 +26,8 @@ function Profile() {
   }, []);
 
   const handleLogout = () => {
-    // 모든 로그인 관련 정보 제거
-    localStorage.removeItem("token");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("username");
-    localStorage.removeItem("name");
-    localStorage.removeItem("email");
-    localStorage.removeItem("createdAt");
-    localStorage.removeItem("profileImage");
-
-    navigate("/login", { replace: true }); // 로그인 페이지 이동 + 뒤로가기 방지
+    localStorage.clear();
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -47,6 +39,7 @@ function Profile() {
         <div className="my_top-main">{username || "username"}</div>
         <div className="my_top-text">{name || "이름"}</div>
         <div className="my_top-text">{email || "이메일"}</div>
+         <div className="my_top-text">User ID: {userId}</div>
         <div className="my_top-logout" onClick={handleLogout}>
           로그아웃
         </div>
@@ -54,5 +47,6 @@ function Profile() {
     </div>
   );
 }
+
 
 export default Profile;
