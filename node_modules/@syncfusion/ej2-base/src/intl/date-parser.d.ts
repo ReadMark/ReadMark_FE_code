@@ -40,6 +40,13 @@ export declare class DateParser {
      */
     private static internalNumberParser;
     /**
+     * Escapes all regex metacharacters in a string, preserving the {0} placeholder.
+     *
+     * @param {string} str ? - The input string to escape.
+     * @returns {string} ? - The escaped string with {0} preserved.
+     */
+    private static escapeRegex;
+    /**
      * Returns parsed time zone RegExp for provided hour format and time zone
      *
      * @param {string} hourFormat ?

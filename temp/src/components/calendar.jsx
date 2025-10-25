@@ -1,49 +1,36 @@
-import React, { useState, useEffect } from 'react';
+// CalendarP.jsx
+import React from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import '../components/calendar.css';
+import './calendar.css';
 import stamp from '../assets/stamp.svg';
-import axios from 'axios';
 
-function CalendarP() {
-  const [date, setDate] = useState(new Date());
-  const [stampedDates, setStampedDates] = useState([]);
+function CalendarP({ stampedDates, selectedDate, onDateChange }) {
+  const handleChange = (date) => onDateChange(date);
 
-  const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("userId");
+  const tileContent = ({ date }) => {
+    const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+    return stampedDates.includes(dateStr) ? <img className="stamp_img" src={stamp} alt="stamp" /> : null;
+  };
 
-  useEffect(() => {
-    if (!token || !userId) return;
-
-    const fetchStampedDates = async () => {
-      try {
-        const res = await axios.get(`http://43.200.102.14:5000/api/image/stats/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-
-        // 예: res.data.readingDays = ['2025-09-18', '2025-09-20']
-        setStampedDates(res.data.readingDays || []);
-      } catch (err) {
-        console.error("도장 날짜 불러오기 실패:", err);
-      }
-    };
-
-    fetchStampedDates();
-  }, [token, userId]);
-
-  const tileContent = ({ date, view }) => {
-    const dateStr = date.toISOString().split('T')[0];
-    if (stampedDates.includes(dateStr)) {
-      return <img className="stamp_img" src={stamp} alt="stamp" />;
+  const tileClassName = ({ date, view }) => {
+    if (view === 'month') {
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+      if (stampedDates.includes(dateStr)) return 'completed';
+      if (date < today) return 'missed';
     }
+    return null;
   };
 
   return (
     <div className="calendar_container">
       <Calendar
-        onChange={setDate}
-        value={date}
+        onChange={handleChange}
+        value={selectedDate}
         tileContent={tileContent}
+        tileClassName={tileClassName}
       />
     </div>
   );

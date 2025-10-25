@@ -111,6 +111,7 @@ export declare class NumberFormat {
      * @param {NumberFormatOptions} [option] ?
      * @returns {string} ?
      */
+    private static roundTo;
     private static processFraction;
     /**
      * Returns integer processed numeric string

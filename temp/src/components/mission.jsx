@@ -1,58 +1,110 @@
+// Mission.jsx
 import { useEffect, useState } from "react";
-import axios from "axios";
 import MissionEach from "./missionEach";
-import "./misson.css";
 import FirstImg from "../assets/missionF.svg";
+import axios from "axios";
 
-function Mission() {
+function Mission({ selectedDate, stampDates, setStampDates }) {
   const [completed, setCompleted] = useState(false);
   const [todayPages, setTodayPages] = useState(0);
+  const [todayMinutes, setTodayMinutes] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  const userId = 4; // 로그인된 사용자 ID 예시
-  const today = new Date().getDay();
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
 
-  // ✅ 요일별 미션
+  const dateObj = selectedDate || new Date();
+  const dateStr = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${String(dateObj.getDate()).padStart(2, "0")}`;
+
   const missions = {
-    1: { text: "오늘은 책 20p 돌파!", id: 1, requiredPages: 20 },
-    2: { text: "20p 이상 읽기!", id: 2, requiredPages: 20 },
-    3: { text: "10p 이상 읽기!", id: 3, requiredPages: 10 },
-    4: { text: "30p 이상 읽기!", id: 4, requiredPages: 30 },
-    5: { text: "30p 도전!", id: 5, requiredPages: 30 },
-    6: { text: "자유롭게 독서하기", id: 6, requiredPages: 0 },
-    0: { text: "편하게 책 읽기", id: 7, requiredPages: 0 },
+    1: { text: "오늘은 책 20p 돌파!", requiredPages: 20 },
+    2: { text: "20p 이상 읽기!", requiredPages: 20 },
+    3: { text: "10p 이상 읽기!", requiredPages: 10 },
+    4: { text: "책 30분 이상 읽기!", requiredMinutes: 30 },
+    5: { text: "30p 도전!", requiredPages: 30 },
+    6: { text: "자유롭게 독서하기", requiredPages: 0 },
+    0: { text: "편하게 책 읽기", requiredPages: 0 },
   };
 
-  const todayMission = missions[today] || { text: "오늘의 미션을 즐기세요!", id: null };
+  const todayMission = missions[dateObj.getDay()] || { text: "오늘의 미션을 즐기세요!" };
 
-  // ✅ API로 오늘 미션 상태 불러오기
   useEffect(() => {
-    const fetchMissionStatus = async () => {
-      try {
-        const baseURL = "http://43.200.102.14:5000/api";
-        const response = await axios.get(`${baseURL}/missions/user/${userId}/today`);
+    let isMounted = true;
+    setLoading(true);
 
-        // todayPages가 undefined면 0으로 처리
-        setTodayPages(response.data.todayPages ?? 0);
-        setCompleted(response.data.completed ?? false);
-      } catch (error) {
-        console.error("미션 상태 불러오기 실패:", error);
-        setTodayPages(0);
-        setCompleted(false);
+    const fetchDailySummary = async () => {
+      try {
+        const res = await axios.get(
+          `http://43.200.102.14:5000/api/calendar/${userId}/stamp/${dateStr}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        if (!isMounted) return;
+
+        const stampInfo = res.data.stampInfo || {};
+        const pages = stampInfo.pagesRead ?? 0;
+        const minutes = stampInfo.minutesRead ?? 0;
+
+        setTodayPages(pages);
+        setTodayMinutes(minutes);
+
+        // ✅ 완료 여부 판단
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const selected = new Date(dateObj);
+        selected.setHours(0, 0, 0, 0);
+
+        let isMissionDone = false;
+        if (stampDates.includes(dateStr) || stampInfo.hasStamp) isMissionDone = true;
+        else if (todayMission.requiredPages && pages >= todayMission.requiredPages) isMissionDone = true;
+        else if (todayMission.requiredMinutes && minutes >= todayMission.requiredMinutes) isMissionDone = true;
+
+        // 과거 날인데 미완료면 false
+        if (selected < today && !isMissionDone) isMissionDone = false;
+
+        setCompleted(isMissionDone);
+
+        // 오늘 완료면 서버 등록
+        if (isMissionDone && selected.getTime() === today.getTime() && !stampDates.includes(dateStr)) {
+          setStampDates(prev => [...prev, dateStr]);
+          await axios.post(
+            `http://43.200.102.14:5000/api/missions/${dateStr}/complete?userId=${userId}`,
+            {},
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+        }
+
+      } catch (err) {
+        console.error("Daily summary 조회 실패:", err.response || err);
+      } finally {
+        if (isMounted) setLoading(false);
       }
     };
 
-    fetchMissionStatus();
-  }, [today]);
+    fetchDailySummary();
+    return () => { isMounted = false; };
+  }, [selectedDate, stampDates]);
+
+  // ✅ 스타일 계산
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const selected = new Date(dateObj);
+  selected.setHours(0, 0, 0, 0);
+
+  const backgroundColor = completed ? "#6abe32" : selected < today ? "#df241d" : "#f5f5f5";
+  const textColor = completed || selected < today ? "white" : "black";
 
   return (
     <div className="mission_container">
-      <div className="MissonTitle">오늘의 미션</div>
-
+      <div className="MissonTitle">{dateStr} 미션</div>
       <div
         className="mission-each"
         style={{
-          backgroundColor: completed ? "#6abe32" : "#f5f5f5",
-          color: completed ? "white" : "black",
+          backgroundColor,
+          color: textColor,
           borderRadius: "12px",
           padding: "16px",
           transition: "0.3s ease",
@@ -69,9 +121,13 @@ function Mission() {
             transform: "translateY(-50%)",
           }}
         >
-          {completed
+          {loading
+            ? "⏳ 로딩 중..."
+            : completed
             ? "✅ 미션 완료!"
-            : `📖 오늘 읽은 페이지: ${todayPages}p`}
+            : todayMission.requiredPages !== undefined
+            ? `📖 읽은 페이지: ${todayPages}p`
+            : `⏱ 읽은 시간: ${todayMinutes}분`}
         </div>
       </div>
     </div>

@@ -1,0 +1,118 @@
+.main__books-texts {
+  margin-left: 3px;
+  margin-top: 4px;
+}
+
+.main__book-title {
+  font-size: 20px;
+}
+
+.main__books-container {
+  display: grid;
+  grid-template-columns: repeat(4, 220px); /* 한 줄에 4개 */
+  justify-content: center;
+  gap: 25px 80px;
+  margin: 60px auto 100px auto;
+}
+
+.main__book-each {
+  width: 220px;
+  margin-bottom: 20px;
+  border: 1px solid rgb(202, 202, 202);
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 3px 3px 8px rgba(0,0,0,0.3);
+  transition: border 0.2s, transform 0.2s;
+  background-color: white;
+}
+
+/* 페이지 정보 (프로그래스바 포함) */
+.book-progress-container {
+  margin-top: 10px;
+}
+
+.book-progress-bar {
+  width: 100%;
+  background-color: #eee;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: -5px;
+  margin-bottom: 5px;
+  height: 8px;
+}
+
+.book-progress-bar-fill {
+  height: 8px;
+  background-color: #0033ff;
+  transition: width 0.3s ease-in-out;
+}
+
+.book-progress-text {
+  font-size: 12px;
+  text-align: right;
+  margin-top: 5px;
+  color: #555;
+}
+
+/* 저자 텍스트 */
+.main__book-sub-text {
+  color: rgb(85, 85, 85);
+  font-size: 16px;
+}
+
+.main__book-img {
+  width: 93%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 10px;
+  background-color: rgb(255, 255, 255);
+}
+
+.main__book-img-container {
+  display: flex;
+  justify-content: center;
+}
+
+/* 삭제 모드일 때 */
+.delete-hover {
+  border: 2px solid red;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* 삭제 모드 아닐 때 호버 효과 */
+.main__book-each:not(.delete-hover):hover {
+  box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+  transform: translateY(-2px);
+}
+
+/* 버튼 영역 */
+.button-container {
+  flex-direction: column;
+  margin-top: 20px;
+  position: absolute;
+}
+
+.button {
+  color: rgb(0, 0, 0);
+  background-color: rgb(227, 227, 227);
+  margin-top: 5px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: rgb(210, 210, 210);
+}
+
+/* 마지막으로 읽은 날짜 표시 */
+.last-read-date {
+  font-size: 13px;
+  color: #666;
+  margin-top: 8px;
+  text-align: right;
+}

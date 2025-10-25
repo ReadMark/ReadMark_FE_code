@@ -1,16 +1,24 @@
 import React from "react";
-import './mypage.css';
-import DefaultBookImg from '../../assets/bookImg.jpg';
+import "./mypage.css";
+import DefaultBookImg from "../../assets/bookImg.jpg";
 
-function Mypa({ deleteMode, title, author, pageNumber, bookImage, createdAt, favPageId, onDelete }) {
+function Mypa({
+  deleteMode,
+  title,
+  author,
+  pageNumber,
+  bookImage,
+  createdAt,
+  favPageId,
+  onDelete,
+}) {
   const serverUrl = "http://43.200.102.14:5000";
 
-    const handleClick = () => {
-      if (deleteMode) {
-        onDelete(favPageId);
-      }
-    };
-
+  const handleClick = () => {
+    if (deleteMode) {
+      onDelete(favPageId);
+    }
+  };
 
   const formatDate = (dateString) => {
     if (!dateString) return "";
@@ -19,12 +27,16 @@ function Mypa({ deleteMode, title, author, pageNumber, bookImage, createdAt, fav
   };
 
   const imageSrc = bookImage
-    ? (bookImage.startsWith("http") ? bookImage : `${serverUrl}${bookImage}`)
+    ? bookImage.startsWith("http")
+      ? bookImage
+      : `${serverUrl}${bookImage}`
     : DefaultBookImg;
 
   return (
     <div
-      className={`my-fa-page-each-container ${deleteMode ? 'delete-hover' : ''}`}
+      className={`my-fa-page-each-container ${
+        deleteMode ? "delete-hover" : ""
+      }`}
       onClick={handleClick}
     >
       <div className="index">{pageNumber}p</div>
@@ -42,7 +54,10 @@ function Mypa({ deleteMode, title, author, pageNumber, bookImage, createdAt, fav
         <div className="my-fa-page-book-title">{title}</div>
         <div className="my-fa-page-book-text">{author}</div>
         <div className="my-fa-page-book-text">
-          저장한 날짜: {createdAt ? formatDate(createdAt) : formatDate(new Date().toISOString())}
+          저장한 날짜:{" "}
+          {createdAt
+            ? formatDate(createdAt)
+            : formatDate(new Date().toISOString())}
         </div>
       </div>
     </div>

@@ -6,9 +6,10 @@ function ModalWant({ onClose, refreshBooks }) {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [bookImage, setBookImage] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null); // ✅ 이미지 미리보기용 상태
 
   const token = localStorage.getItem("token");
-  const userId = Number(localStorage.getItem("userId")); // 정수로 변환
+  const userId = Number(localStorage.getItem("userId"));
 
   const handleSave = async () => {
     if (!title || !author) return alert("책 제목과 작가를 입력해주세요!");
@@ -43,6 +44,7 @@ function ModalWant({ onClose, refreshBooks }) {
 
       if (!wishRes.data.success) return alert("읽고 싶은 책 추가 실패");
 
+      // ✅ 업로드된 책 다시 불러오기
       await refreshBooks();
       onClose();
     } catch (err) {
@@ -51,25 +53,41 @@ function ModalWant({ onClose, refreshBooks }) {
     }
   };
 
+  // 📸 파일 선택 시 미리보기 표시
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setBookImage(file);
+    if (file) {
+      const preview = URL.createObjectURL(file);
+      setPreviewUrl(preview);
+    }
+  };
+
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal" onClick={e => e.stopPropagation()}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
         <h2>읽고 싶은 책 추가</h2>
 
         <div>
           <p>책 제목</p>
-          <input value={title} onChange={e => setTitle(e.target.value)} placeholder="책 제목"/>
+          <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="책 제목" />
         </div>
 
         <div>
           <p>작가</p>
-          <input value={author} onChange={e => setAuthor(e.target.value)} placeholder="작가"/>
+          <input value={author} onChange={(e) => setAuthor(e.target.value)} placeholder="작가" />
         </div>
 
         <div>
           <p>책표지</p>
-          <input type="file" onChange={e => setBookImage(e.target.files[0])} />
-          {bookImage && <img src={URL.createObjectURL(bookImage)} alt="책표지" style={{ width: "80px", marginTop: "10px" }}/>}
+          <input type="file" onChange={handleFileChange} />
+          {previewUrl && (
+            <img
+              src={previewUrl}
+              alt="책표지 미리보기"
+              style={{ width: "80px", marginTop: "10px", borderRadius: "6px" }}
+            />
+          )}
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", marginTop: "20px" }}>
