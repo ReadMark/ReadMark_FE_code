@@ -113,8 +113,6 @@ function ModalAddFavoritePage({ onClose, refreshPages }) {
 
             <p>책 표지 업로드</p>
             <input type="file" onChange={handleCoverChange} />
-
-    
           </div>
         </div>
 
