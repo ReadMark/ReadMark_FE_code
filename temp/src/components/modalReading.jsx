@@ -12,7 +12,9 @@ function ModalNowRead({ onClose, refreshBooks }) {
   const userId = Number(localStorage.getItem("userId"));
 
   const handleSave = async () => {
-    if (!title || !author || !maxPage) return alert("제목, 작가, 총 페이지를 입력해주세요!");
+    if (!title || !author || !maxPage) {
+      return alert("제목, 작가, 총 페이지를 입력해주세요!");
+    }
 
     try {
       const formData = new FormData();
@@ -24,27 +26,33 @@ function ModalNowRead({ onClose, refreshBooks }) {
       const bookRes = await axios.post(
         "http://43.200.102.14:5000/api/books",
         formData,
-        { headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" } }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
-      if (!bookRes.data.success) return alert("책 등록 실패: " + bookRes.data.message);
+      if (!bookRes.data.success)
+        return alert("책 등록 실패: " + bookRes.data.message);
       const bookId = bookRes.data.data?.bookId || bookRes.data.bookId;
 
-      // UserBook 등록 (초기 currentPage = 0)
+      // UserBook 등록
       await axios.post(
         "http://43.200.102.14:5000/api/userbooks",
         {
           userId,
           bookId,
           status: "NOW_READ",
-          currentPage: 0,
+          currentPage: 0, // 기본값
           maxPage: Number(maxPage),
-          lastReadAt: new Date().toISOString(),
+          lastReadAt: new Date().toISOString(), // 현재 시간
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      await refreshBooks(); // ✅ 오늘 읽은 페이지 + 프로그래스바 갱신
+      await refreshBooks();
       onClose();
     } catch (err) {
       console.error(err);
@@ -59,12 +67,20 @@ function ModalNowRead({ onClose, refreshBooks }) {
 
         <div>
           <p>책 제목</p>
-          <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="책 제목" />
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="책 제목"
+          />
         </div>
 
         <div>
           <p>작가</p>
-          <input value={author} onChange={(e) => setAuthor(e.target.value)} placeholder="작가명" />
+          <input
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+            placeholder="작가명"
+          />
         </div>
 
         <div>
@@ -74,7 +90,13 @@ function ModalNowRead({ onClose, refreshBooks }) {
 
         <div>
           <p>총 페이지</p>
-          <input type="number" min="1" value={maxPage} onChange={(e) => setMaxPage(e.target.value)} placeholder="예: 300" />
+          <input
+            type="number"
+            min="1"
+            value={maxPage}
+            onChange={(e) => setMaxPage(e.target.value)}
+            placeholder="예: 300"
+          />
         </div>
 
         <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-between" }}>

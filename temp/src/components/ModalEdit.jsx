@@ -12,6 +12,7 @@ function ModalEdit({ onClose, bookData, refreshBooks }) {
 
   const token = localStorage.getItem("token");
 
+  // ✅ bookData가 바뀔 때 기존 데이터 자동 세팅
   useEffect(() => {
     if (bookData) {
       setTitle(bookData.title || "");
@@ -22,8 +23,9 @@ function ModalEdit({ onClose, bookData, refreshBooks }) {
 
   const handleCoverChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setCoverFile(e.target.files[0]);
-      setCoverPreview(URL.createObjectURL(e.target.files[0]));
+      const file = e.target.files[0];
+      setCoverFile(file);
+      setCoverPreview(URL.createObjectURL(file));
     }
   };
 
@@ -36,24 +38,21 @@ function ModalEdit({ onClose, bookData, refreshBooks }) {
       formData.append("author", author);
       if (coverFile) formData.append("coverImage", coverFile);
 
+      // ✅ 엔드포인트 수정
       const res = await axios.put(
-        `http://43.200.102.14:5000/api/books/${bookData.bookId}`,
+        `http://43.200.102.14:5000/api/userbooks/${bookData.userBookId}/edit-book-info`,
         formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            // Content-Type 제거 -> axios가 자동으로 설정
+            "Content-Type": "multipart/form-data",
           },
         }
       );
 
-      if (res.data.success) {
-        alert("책 정보가 수정되었습니다!");
-        if (refreshBooks) refreshBooks();
-        onClose();
-      } else {
-        alert("수정 실패: " + res.data.message);
-      }
+      alert("책 정보가 수정되었습니다!");
+      if (refreshBooks) refreshBooks();
+      onClose();
     } catch (err) {
       console.error("수정 실패:", err);
       alert("수정 중 오류 발생");
@@ -82,10 +81,22 @@ function ModalEdit({ onClose, bookData, refreshBooks }) {
               />
             )}
             <input type="file" onChange={handleCoverChange} />
+
             <p>책 이름</p>
-            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+            <input
+              type="text"
+              value={title}
+              placeholder="책 제목을 입력하세요"
+              onChange={(e) => setTitle(e.target.value)}
+            />
+
             <p>작가</p>
-            <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} />
+            <input
+              type="text"
+              value={author}
+              placeholder="작가를 입력하세요"
+              onChange={(e) => setAuthor(e.target.value)}
+            />
           </div>
         </div>
 

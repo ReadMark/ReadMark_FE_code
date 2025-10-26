@@ -16,15 +16,13 @@ function MainPage() {
   const [deleteMode, setDeleteMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
-  const [todayPages, setTodayPages] = useState(0); // 오늘 읽은 페이지
 
   const token = localStorage.getItem("token");
   const userId = Number(localStorage.getItem("userId"));
 
-  // 1️⃣ UserBooks 가져오기
+  // 1️⃣ 읽고 있는 책 불러오기
   const fetchBooks = async () => {
     if (!token || !userId) return;
-
     try {
       const res = await axios.get(
         `http://43.200.102.14:5000/api/userbooks/user/${userId}/status/NOW_READ`,
@@ -40,9 +38,8 @@ function MainPage() {
           coverImageUrl: item.book?.coverImageUrl
             ? `http://43.200.102.14:5000${item.book.coverImageUrl}`
             : defaultBook,
-          currentPage:
-            typeof item.currentPage === "number" ? item.currentPage : 0,
-          maxPage: typeof item.maxPage === "number" ? item.maxPage : 300,
+          currentPage: item.currentPage ?? 0,
+          maxPage: item.maxPage ?? 300,
           lastRead: item.updatedAt
             ? new Date(item.updatedAt).toLocaleDateString()
             : new Date().toLocaleDateString(),
@@ -57,42 +54,55 @@ function MainPage() {
     }
   };
 
-  // 2️⃣ 임베디드에서 오늘 읽은 페이지 가져오기
-  const fetchTodayPagesFromEmbed = async () => {
+  // 2️⃣ ESP32 currentPage & 총 읽은 페이지 한번에 반영
+  const fetchCurrentPagesAndToday = async () => {
     if (!userId) return;
-
     try {
-      const res = await axios.get(
-        `http://43.200.102.14:5000/upload/frontend/book-info/${userId}`
+      const [embedRes, logRes] = await Promise.all([
+        axios.get(`http://43.200.102.14:5000/api/upload/frontend/book-info/${userId}`),
+        axios.get(`http://43.200.102.14:5000/api/readinglogs/user/${userId}/today`)
+      ]);
+
+      const embedData = embedRes.data;
+      const logData = logRes.data;
+
+      setBooks((prev) =>
+        prev.map((b) =>
+          embedData.success && embedData.bookId === b.bookId
+            ? { ...b, currentPage: embedData.currentPage }
+            : b
+        )
       );
 
-      if (res.data.success) {
-        const { bookId, currentPage } = res.data;
-
-        // books에서 해당 book 찾기
-        const book = books.find((b) => b.bookId === bookId);
-        if (book) {
-          const todayRead = Math.max(0, currentPage - (book.currentPage || 0));
-          setTodayPages(todayRead);
-        } else {
-          setTodayPages(0);
-        }
-      }
+      return logData.success ? logData.totalPagesRead ?? 0 : 0;
     } catch (err) {
-      console.error("임베디드에서 오늘 읽은 페이지 조회 실패:", err);
-      setTodayPages(0);
+      console.error("페이지 정보 조회 실패:", err);
+      return 0;
     }
   };
 
+  // 3️⃣ 다 읽은 책으로 상태 변경
+  const moveBookToDone = async (userBookId) => {
+    try {
+      await axios.put(
+        `http://43.200.102.14:5000/api/userbooks/${userBookId}/status`,
+        { status: "READ_DONE" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setBooks((prev) => prev.filter((b) => b.userBookId !== userBookId));
+      console.log(`✅ ${userBookId}번 책을 완독 처리`);
+    } catch (err) {
+      console.error("완독 상태 변경 실패:", err);
+    }
+  };
+
+  // 4️⃣ 책 삭제
   const handleDeleteBook = async (userBookId) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
-
     try {
       await axios.delete(
         `http://43.200.102.14:5000/api/userbooks/${userBookId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setBooks((prev) => prev.filter((b) => b.userBookId !== userBookId));
     } catch (err) {
@@ -101,19 +111,16 @@ function MainPage() {
     }
   };
 
+  // 초기 데이터 fetch
   useEffect(() => {
-    fetchBooks();
+    fetchBooks().then(fetchCurrentPagesAndToday);
   }, []);
-
-  useEffect(() => {
-    fetchTodayPagesFromEmbed(); // books가 바뀌고 나서 실행
-  }, [books]);
 
   return (
     <>
       <Header />
       <MainImage />
-      <BookState todayPages={todayPages} />
+      <BookState todayPages={0} />
 
       <div className="button-container">
         <button className="button" onClick={() => setShowModal(true)}>
@@ -133,10 +140,7 @@ function MainPage() {
       {showModal && (
         <ModalNowRead
           onClose={() => setShowModal(false)}
-          refreshBooks={() => {
-            fetchBooks(); // books 다시 가져오기
-            fetchTodayPages(); // 오늘 읽은 페이지 갱신
-          }}
+          refreshBooks={fetchBooks}
         />
       )}
 
@@ -155,10 +159,16 @@ function MainPage() {
           </p>
         ) : (
           books.map((book) => {
-            const todayProgress = Math.min(
-              (todayPages / book.maxPage) * 100,
+            const progress = Math.min(
+              (book.currentPage / book.maxPage) * 100,
               100
             );
+
+            // 진행률 100%이면 자동 완독 처리
+            if (progress >= 100) {
+              moveBookToDone(book.userBookId);
+            }
+
             const borderClass = editMode
               ? "edit-border"
               : deleteMode
@@ -192,16 +202,16 @@ function MainPage() {
                       <div
                         className="book-progress-bar-fill"
                         style={{
-                          width: `${todayProgress}%`,
-                          background: "#4caf50",
+                          width: `${progress}%`,
+                          background: "#0800ff",
                         }}
                       />
                     </div>
                   </div>
                   <div className="main__book-sub-text">{book.author}</div>
                   <div className="main__book-sub-text">
-                    오늘 읽은 페이지: {todayPages}/{book.maxPage} (
-                    {todayProgress.toFixed(1)}%)
+                    총 읽은 페이지: {book.currentPage}/{book.maxPage} (
+                    {progress.toFixed(1)}%)
                   </div>
                   <div className="main__book-sub-text">
                     마지막으로 읽은 날짜: {book.lastRead}

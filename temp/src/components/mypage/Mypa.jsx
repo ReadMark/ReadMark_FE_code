@@ -1,6 +1,5 @@
 import React from "react";
 import "./mypage.css";
-import DefaultBookImg from "../../assets/bookImg.jpg";
 
 function Mypa({
   deleteMode,
@@ -30,7 +29,7 @@ function Mypa({
     ? bookImage.startsWith("http")
       ? bookImage
       : `${serverUrl}${bookImage}`
-    : DefaultBookImg;
+    : undefined; // 기본 이미지 제거
 
   return (
     <div
@@ -42,12 +41,13 @@ function Mypa({
       <div className="index">{pageNumber}p</div>
 
       <div className="book-image-wrapper">
-        <img
-          className="main__book-imgs"
-          src={imageSrc}
-          alt={title || "책 표지"}
-          onError={(e) => (e.target.src = DefaultBookImg)}
-        />
+        {imageSrc && (
+          <img
+            className="main__book-imgs"
+            src={imageSrc}
+            alt={title || "책 표지"}
+          />
+        )}
       </div>
 
       <div className="my-fa-page_books-texts">

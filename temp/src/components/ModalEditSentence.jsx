@@ -5,29 +5,33 @@ import DefaultBookImg from '../assets/bookImg.jpg';
 
 function ModalEditsen({ favQuote, bookData, onClose, setSentences }) {
   const [bookTitle, setBookTitle] = useState("");
-  const [coverImageUrl, setCoverImageUrl] = useState(DefaultBookImg);
+  const [coverImageUrl, setCoverImageUrl] = useState("");
   const [content, setContent] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
 
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
+  const serverUrl = "http://43.200.102.14:5000"; // 서버 주소
 
   useEffect(() => {
     if (favQuote) {
+      // 편집 모드
       setBookTitle(favQuote.bookTitle || "");
       setContent(favQuote.content || "");
       setPageNumber(favQuote.pageNumber || 1);
-      setCoverImageUrl(favQuote.coverImageUrl || DefaultBookImg);
+      setCoverImageUrl(favQuote.coverImageUrl || "");
     } else if (bookData) {
+      // 책 선택 후 새 문장 추가
       setBookTitle(bookData.bookTitle || "");
       setContent("");
       setPageNumber(1);
-      setCoverImageUrl(bookData.coverImageUrl || DefaultBookImg);
+      setCoverImageUrl(bookData.coverImageUrl || "");
     } else {
+      // 완전히 새 문장 추가
       setBookTitle("");
       setContent("");
       setPageNumber(1);
-      setCoverImageUrl(DefaultBookImg);
+      setCoverImageUrl("");
     }
   }, [favQuote, bookData]);
 
@@ -37,33 +41,39 @@ function ModalEditsen({ favQuote, bookData, onClose, setSentences }) {
     if (!pageNumber || pageNumber < 1) return alert("페이지 번호를 1 이상 입력해주세요.");
 
     try {
-      const formParams = new URLSearchParams();
-      formParams.append("bookTitle", bookTitle);
-      formParams.append("coverImageUrl", coverImageUrl);
-      formParams.append("pageNumber", pageNumber.toString());
-      formParams.append("content", content);
+      // payload
+      const payload = {
+        bookTitle,
+        coverImageUrl: coverImageUrl || null,
+        pageNumber,
+        content
+      };
 
       if (favQuote && favQuote.favQuoteId) {
+        // 편집 모드 (PUT)
         const res = await axios.put(
-          `http://43.200.102.14:5000/api/mypage/favorite-quote/${favQuote.favQuoteId}`,
-          new URLSearchParams({ pageNumber: pageNumber.toString(), content, coverImageUrl }),
-          { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/x-www-form-urlencoded' } }
+          `${serverUrl}/api/mypage/favorite-quote/${favQuote.favQuoteId}`,
+          payload,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
+
         if (res.data.success) {
           alert("문장이 수정되었습니다.");
           const fetchRes = await axios.get(
-            `http://43.200.102.14:5000/api/mypage/user/${userId}/favorite-quotes`,
+            `${serverUrl}/api/mypage/user/${userId}/favorite-quotes`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
           setSentences(fetchRes.data.success ? fetchRes.data.favoriteQuotes : []);
           onClose();
         }
       } else {
+        // 새 문장 추가 (POST)
         const res = await axios.post(
-          `http://43.200.102.14:5000/api/mypage/user/${userId}/favorite-quote`,
-          formParams,
-          { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/x-www-form-urlencoded' } }
+          `${serverUrl}/api/mypage/user/${userId}/favorite-quote`,
+          payload,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
+
         if (res.data.success) {
           alert("즐겨찾기한 문장이 저장되었습니다.");
           setSentences(prev => prev ? [...prev, res.data.favoriteQuote] : [res.data.favoriteQuote]);
@@ -77,6 +87,13 @@ function ModalEditsen({ favQuote, bookData, onClose, setSentences }) {
       alert("저장 실패: " + JSON.stringify(err.response?.data || err.message));
     }
   };
+
+  // 서버 URL 처리된 이미지 미리보기
+  const previewImageSrc = coverImageUrl
+    ? coverImageUrl.startsWith("http")
+      ? coverImageUrl
+      : `${serverUrl}${coverImageUrl}`
+    : DefaultBookImg;
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
@@ -103,7 +120,7 @@ function ModalEditsen({ favQuote, bookData, onClose, setSentences }) {
           />
           <div style={{ marginTop: "10px" }}>
             <img
-              src={coverImageUrl}
+              src={previewImageSrc}
               alt="책 표지 미리보기"
               style={{ width: "80px", height: "100px", objectFit: "cover", border: "1px solid #ccc" }}
               onError={(e) => (e.target.src = DefaultBookImg)}

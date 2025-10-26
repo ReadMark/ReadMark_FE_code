@@ -24,23 +24,35 @@ function Join() {
     try {
       // 이메일 간단 체크
       if (!form.email.includes("@")) {
-        alert("이메일 형식이 올바르지 않습니다. '@'를 포함해야 합니다.");
+        alert("이메일 형식이 올바르지 않습니다.");
         return;
       }
 
-      // 회원가입
+      // 필수 값 체크
+      if (!form.name || !form.userId || !form.password) {
+        alert("모든 필수 항목을 입력해주세요.");
+        return;
+      }
+
+      // 서버 요구 요청 body
+      const bodyData = {
+        name: form.name,
+        username: form.userId, // username 필드로 전송
+        email: form.email,
+        password: form.password,
+      };
+
+      console.log("회원가입 요청 body:", bodyData);
+
       const res = await fetch("http://43.200.102.14:5000/api/users/join", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: form.userId,
-          password: form.password,
-          email: form.email,
-          name: form.name,
-        }),
+        body: JSON.stringify(bodyData),
       });
 
       const data = await res.json();
+      console.log("서버 응답 전체:", data);
+
       if (!res.ok) {
         alert(`회원가입 실패: ${data.message || "알 수 없는 오류"}`);
         return;
@@ -48,11 +60,11 @@ function Join() {
 
       alert("회원가입 성공!");
 
-      // 2️⃣ 서버 반환 userId 가져오기
-      const userId = data.user?.userId;
+      // 서버 반환 userId 가져오기
+      const userId = data.data?.userId;
       if (!userId) return alert("서버에서 userId를 가져오지 못했습니다.");
 
-      // 3️⃣ 프로필 이미지 업로드
+      // 프로필 이미지 업로드 (선택 사항)
       if (form.profileImage) {
         const imgData = new FormData();
         imgData.append("image", form.profileImage);
@@ -64,14 +76,13 @@ function Join() {
 
         const imgDataJson = await imgRes.json();
         if (imgRes.ok && imgDataJson.success) {
-          // localStorage에 프로필 이미지 URL 저장
           localStorage.setItem("profileImage", `http://43.200.102.14:5000${imgDataJson.profileImageUrl}`);
         } else {
           console.error("프로필 업로드 실패:", imgDataJson);
         }
       }
 
-      // 4️⃣ localStorage에 회원 정보 저장
+      // localStorage에 회원 정보 저장
       localStorage.setItem("userId", userId);
       localStorage.setItem("username", form.userId);
       localStorage.setItem("name", form.name);
