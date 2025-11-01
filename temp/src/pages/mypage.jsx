@@ -6,10 +6,11 @@ import Mysen from "../components/mypage/Mysen";
 import ProBlock from "../components/mypage/ProBlock";
 import Record from "../components/mypage/record";
 import Profile from "../components/mypage/profile";
-import ModalEdit from "../components/ModalEdit";
 import axios from "axios";
-import ModalAddFavoriteSen from "../components/mypage/ModalAddFavoriteSen";
-import ModalAddFavoritePage from "../components/mypage/ModalAddFavoritePage"
+
+// ✅ 모달 import 순서 바로잡음
+import ModalAddFavoritePage from "../components/mypage/ModalAddFavoritePage"; // 페이지 추가 모달
+import ModalAddFavoriteSen from "../components/mypage/ModalAddFavoriteSen"; // 문장 추가 모달
 
 function Mypage() {
   const [showPageModal, setShowPageModal] = useState(false); // 페이지 추가 모달
@@ -32,6 +33,7 @@ function Mypage() {
     window.location.replace("/login");
   };
 
+  // ✅ 데이터 가져오기
   useEffect(() => {
     if (!token || !userId || userId === "undefined") {
       alert("로그인 후 접근하세요.");
@@ -47,14 +49,17 @@ function Mypage() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
+
         if (res.data.success) {
+          const d = res.data.data; // data 꺼내기
+
           setStats({
-            readingStreak: res.data.stats.maxConsecutiveDays,
-            totalBooks: res.data.stats.totalStamps,
-            totalDays: res.data.stats.totalReadingDays,
-            readingBooks: res.data.stats.nowReadingCount,
-            wishlistBooks: res.data.stats.wannaReadCount,
-            finishedBooks: res.data.stats.readDoneCount,
+            readingStreak: d.maxConsecutiveDays, // 최대 연속으로 읽은 날 수
+            totalBooks: d.totalStamps, // 총 모은 도장 개수
+            totalDays: d.totalReadingDays, // 총 읽은 날 수
+            readingBooks: d.nowReadingCount, // 읽고 있는 책
+            wishlistBooks: d.wannaReadCount, // 읽고 싶은 책
+            finishedBooks: d.readDoneCount, // 다 읽은 책
           });
         }
       } catch (err) {
@@ -66,9 +71,7 @@ function Mypage() {
       try {
         const res = await axios.get(
           `http://43.200.102.14:5000/api/mypage/user/${userId}/favorite-pages`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
         setPages(res.data.success ? res.data.favoritePages : []);
       } catch (err) {
@@ -81,9 +84,7 @@ function Mypage() {
       try {
         const res = await axios.get(
           `http://43.200.102.14:5000/api/mypage/user/${userId}/favorite-quotes`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
         setSentences(res.data.success ? res.data.favoriteQuotes : []);
       } catch (err) {
@@ -97,7 +98,7 @@ function Mypage() {
     fetchSentences();
   }, [token, userId]);
 
-  // 페이지 새로고침
+  // ✅ 페이지 새로고침
   const refreshPages = async (newPage) => {
     if (newPage) {
       setPages((prev) => (prev ? [...prev, newPage] : [newPage]));
@@ -106,9 +107,7 @@ function Mypage() {
     try {
       const res = await axios.get(
         `http://43.200.102.14:5000/api/mypage/user/${userId}/favorite-pages`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setPages(res.data.success ? res.data.favoritePages : []);
     } catch (err) {
@@ -117,7 +116,7 @@ function Mypage() {
     }
   };
 
-  // 문장 새로고침
+  // ✅ 문장 새로고침
   const refreshSentences = async (newSentence) => {
     if (newSentence) {
       setSentences((prev) => (prev ? [...prev, newSentence] : [newSentence]));
@@ -126,9 +125,7 @@ function Mypage() {
     try {
       const res = await axios.get(
         `http://43.200.102.14:5000/api/mypage/user/${userId}/favorite-quotes`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setSentences(res.data.success ? res.data.favoriteQuotes : []);
     } catch (err) {
@@ -137,14 +134,13 @@ function Mypage() {
     }
   };
 
+  // ✅ 삭제 함수
   const handleDeletePage = async (favPageId) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
       const res = await axios.delete(
         `http://43.200.102.14:5000/api/mypage/favorite-page/${favPageId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.data.success)
         setPages((prev) => prev.filter((p) => p.favPageId !== favPageId));
@@ -159,9 +155,7 @@ function Mypage() {
     try {
       const res = await axios.delete(
         `http://43.200.102.14:5000/api/mypage/favorite-quote/${favQuoteId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.data.success)
         setSentences((prev) => prev.filter((s) => s.favQuoteId !== favQuoteId));
@@ -199,18 +193,19 @@ function Mypage() {
         </div>
 
         <div className="button-containers">
-          <button
-            className="modify-button"
-            onClick={() => setShowPageModal(true)}
-          >
-            문장 추가
-          </button>
+          {/* ✅ 버튼 순서/이름 일치시킴 */}
           <button
             className="modify-button"
             onClick={() => {
               setEditingSentence(null);
               setShowSentenceModal(true);
             }}
+          >
+            문장 추가
+          </button>
+          <button
+            className="modify-button"
+            onClick={() => setShowPageModal(true)}
           >
             페이지 추가
           </button>
@@ -231,21 +226,18 @@ function Mypage() {
               ) : sentences.length === 0 ? (
                 <div className="riri">즐겨찾기한 문장이 없습니다.</div>
               ) : (
-                sentences
-                  .filter((s) => s && s.favQuoteId)
-                  .map((sentence) => (
-                    <Mysen
-                      key={sentence.favQuoteId}
-                      sentenceData={sentence}
-                      showEdit={false}
-                      deleteMode={deleteMode}
-                      onDelete={handleDeleteSentence}
-                      onEditClick={(data) => {
-                        setEditingSentence(data);
-                        setShowSentenceModal(true);
-                      }}
-                    />
-                  ))
+                sentences.map((sentence) => (
+                  <Mysen
+                    key={sentence.favQuoteId}
+                    sentenceData={sentence}
+                    deleteMode={deleteMode}
+                    onDelete={handleDeleteSentence}
+                    onEditClick={(data) => {
+                      setEditingSentence(data);
+                      setShowSentenceModal(true);
+                    }}
+                  />
+                ))
               )}
             </div>
           </div>
@@ -264,7 +256,7 @@ function Mypage() {
                     favPageId={page.favPageId}
                     title={page.bookTitle}
                     pageNumber={page.pageNumber}
-                    bookImage={page.coverImageUrl} // 기본 이미지 제거
+                    bookImage={page.coverImageUrl}
                     createdAt={page.createdAt}
                     deleteMode={deleteMode}
                     onDelete={handleDeletePage}
@@ -277,24 +269,25 @@ function Mypage() {
         </div>
       </main>
 
-      {/* 즐겨찾기 페이지 추가/수정 모달 */}
-      {showPageModal && (
-        <ModalAddFavoriteSen
-          onClose={() => setShowPageModal(false)}
-          bookData={null} // 새 페이지 추가
-          refreshBooks={refreshPages}
-        />
-      )}
-
-      {/* 즐겨찾기 문장 추가/수정 모달 */}
+      {/* ✅ 문장 추가 모달 */}
       {showSentenceModal && (
-        <ModalAddFavoritePage
+        <ModalAddFavoriteSen
           onClose={() => {
             setShowSentenceModal(false);
             setEditingSentence(null);
           }}
           setSentences={setSentences}
           favQuote={editingSentence}
+          refreshBooks={refreshSentences}
+        />
+      )}
+
+      {/* ✅ 페이지 추가 모달 */}
+      {showPageModal && (
+        <ModalAddFavoritePage
+          onClose={() => setShowPageModal(false)}
+          bookData={null}
+          refreshBooks={refreshPages}
         />
       )}
     </>
