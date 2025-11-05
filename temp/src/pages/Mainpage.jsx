@@ -103,14 +103,12 @@ function MainPage() {
       console.error("완독 상태 변경 실패:", err);
     }
   };
-  
 
   return (
     <>
       <Header />
       <MainImage />
       <BookState todayPage={0} />
-      
 
       <div className="button-container">
         <button className="button" onClick={() => setShowModal(true)}>
