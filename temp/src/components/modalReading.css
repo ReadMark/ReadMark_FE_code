@@ -21,7 +21,7 @@
   border: 1px solid rgb(202, 202, 202);
   padding: 10px;
   border-radius: 10px;
-  box-shadow: 3px 3px 8px rgba(0,0,0,0.3);
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
   transition: border 0.2s, transform 0.2s;
   background-color: white;
 }
@@ -82,7 +82,7 @@
 
 /* 삭제 모드 아닐 때 호버 효과 */
 .main__book-each:not(.delete-hover):hover {
-  box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
   transform: translateY(-2px);
 }
 
@@ -115,4 +115,22 @@
   color: #666;
   margin-top: 8px;
   text-align: right;
+}
+
+.modal {
+  position: relative;
+  background: white;
+  z-index: 9999; /* 클릭이 덮이지 않게 최상단으로 올리기 */
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9998; /* modal 바로 아래 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

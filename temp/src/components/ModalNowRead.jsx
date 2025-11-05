@@ -2,41 +2,55 @@ import React, { useState } from "react";
 import "./modalReading.css";
 import axios from "axios";
 
-function ModalNowRead({ onClose, refreshBooks, currentPageFromEmbed = 0, readDateFromEmbed }) {
+function ModalNowRead({
+  onClose,
+  refreshBooks,
+  currentPageFromEmbed = 0,
+  readDateFromEmbed,
+}) {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
-  const [maxPage, setMaxPage] = useState("");
+  const [totalPage, setTotalPage] = useState("");
   const [bookImage, setBookImage] = useState(null);
 
   const token = localStorage.getItem("token");
-  const userId = Number(localStorage.getItem("userId"));
+  const rawUserId = localStorage.getItem("userId");
+  const userId = rawUserId ? JSON.parse(rawUserId) : null;
 
   const handleSave = async () => {
-    if (!title || !author || !maxPage) {
-      return alert("제목, 작가, 총 페이지를 입력해주세요!");
+    if (!title || !author || !totalPage) {
+      return alert("제목, 작가, 총 페이지를 모두 입력해주세요!");
     }
 
     try {
-      // 1️⃣ Book 등록
       const formData = new FormData();
       formData.append("title", title);
       formData.append("author", author);
-      formData.append("maxPage", maxPage);
+      formData.append("totalBook", totalPage);
+
       if (bookImage) formData.append("coverImage", bookImage);
 
       const bookRes = await axios.post(
         "http://43.200.102.14:5000/api/books",
         formData,
-        { headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" } }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
-      if (!bookRes.data.success) return alert("책 등록 실패: " + bookRes.data.message);
+      if (!bookRes.data.success) {
+        return alert("📕 책 등록 실패: " + bookRes.data.message);
+      }
+
       const bookId = bookRes.data.data?.bookId || bookRes.data.bookId;
 
       // 2️⃣ UserBook 등록
-      const page = Math.max(0, Number(currentPageFromEmbed || 0));
-      const totalPage = Number(maxPage);
-      const statusToSave = page >= totalPage ? "READ_DONE" : "NOW_READ";
+      const currentPage = Math.max(0, Number(currentPageFromEmbed || 0));
+      const totalPageNum = Number(totalPage);
+      const statusToSave =
+        currentPage >= totalPageNum ? "READ_DONE" : "NOW_READ";
       const lastReadAt = readDateFromEmbed || new Date().toISOString();
 
       await axios.post(
@@ -45,31 +59,40 @@ function ModalNowRead({ onClose, refreshBooks, currentPageFromEmbed = 0, readDat
           userId,
           bookId,
           status: statusToSave,
-          currentPage: Math.min(page, totalPage),
-          maxPage: totalPage,
+          currentPage: Math.min(currentPage, totalPageNum),
+          maxPage: totalPageNum,
           lastReadAt,
         },
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
 
-      // 3️⃣ 오늘 읽은 페이지 기록
-      if (page > 0) {
+      // 3️⃣ 오늘 읽은 페이지 기록 (옵션)
+      if (currentPage > 0) {
         await axios.post(
           "http://43.200.102.14:5000/api/readinglogs",
           {
             userId,
-            pagesRead: page,
+            pagesRead: currentPage,
             readDate: lastReadAt,
           },
-          { headers: { Authorization: `Bearer ${token}` } }
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
       }
 
-      alert(statusToSave === "READ_DONE" ? "🎉 완료 등록!" : "📚 지금 읽는 책 등록!");
-      await refreshBooks(); // MainPage 갱신
+      alert(
+        statusToSave === "READ_DONE"
+          ? "🎉 완료된 책으로 등록되었습니다!"
+          : "📚 지금 읽는 책 등록 완료!"
+      );
+      await refreshBooks();
+      await new Promise((res) => setTimeout(res, 300));
       onClose();
     } catch (err) {
-      console.error(err);
+      console.error("❌ 등록 중 오류:", err);
       alert("서버 오류: " + JSON.stringify(err.response?.data || err.message));
     }
   };
@@ -84,38 +107,54 @@ function ModalNowRead({ onClose, refreshBooks, currentPageFromEmbed = 0, readDat
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="책 제목"
+            placeholder="책 제목 입력"
           />
         </div>
 
         <div>
-          <p>작가</p>
+          <p>작가명</p>
           <input
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
-            placeholder="작가명"
+            placeholder="작가명 입력"
           />
         </div>
 
         <div>
           <p>책 표지</p>
-          <input type="file" onChange={(e) => setBookImage(e.target.files[0])} />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setBookImage(e.target.files[0])}
+          />
         </div>
 
         <div>
-          <p>총 페이지</p>
+          <p>총 페이지 수</p>
           <input
             type="number"
             min="1"
-            value={maxPage}
-            onChange={(e) => setMaxPage(e.target.value)}
+            value={totalPage}
+            onChange={(e) => setTotalPage(e.target.value)}
             placeholder="예: 300"
           />
         </div>
 
-        <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-between" }}>
+        <div
+          style={{
+            marginTop: "20px",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
           <button onClick={onClose}>닫기</button>
-          <button onClick={handleSave}>저장</button>
+          <button
+            onClick={() => {
+              handleSave();
+            }}
+          >
+            저장
+          </button>
         </div>
       </div>
     </div>

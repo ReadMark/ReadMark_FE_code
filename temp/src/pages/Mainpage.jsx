@@ -1,4 +1,3 @@
-// MainPage.jsx
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header.jsx";
 import MainImage from "../components/MainImg.jsx";
@@ -20,7 +19,7 @@ function MainPage() {
   const token = localStorage.getItem("token");
   const userId = Number(localStorage.getItem("userId"));
 
-  // 1️⃣ 읽고 있는 책 불러오기
+  // ✅ 읽고 있는 책 불러오기 (book이 없을 경우 개별 조회)
   const fetchBooks = async () => {
     if (!token || !userId) return;
     try {
@@ -30,23 +29,39 @@ function MainPage() {
       );
 
       if (res.data.success && Array.isArray(res.data.data)) {
-        const mapped = res.data.data.map((item) => ({
-          userBookId: item.userBookId,
-          bookId: item.book?.bookId ?? item.userBookId,
-          title: item.book?.title ?? "제목 없음",
-          author: item.book?.author ?? "작가 정보 없음",
-          coverImageUrl: item.book?.coverImageUrl
-            ? `http://43.200.102.14:5000${item.book.coverImageUrl}`
-            : defaultBook,
-          currentPage: item.currentPage ?? 0,
-          maxPage: item.maxPage ?? 300,
-          lastRead: item.updatedAt
-            ? new Date(item.updatedAt).toLocaleDateString()
-            : new Date().toLocaleDateString(),
-          favorite: item.favorite ?? false,
-          status: item.status ?? "NOW_READ",
-        }));
-        setBooks(mapped);
+        const booksData = await Promise.all(
+          res.data.data.map(async (item) => {
+            let bookInfo = item.book;
+            if (!bookInfo && item.bookId) {
+              try {
+                const bookRes = await axios.get(
+                  `http://43.200.102.14:5000/api/books/${item.bookId}`
+                );
+                bookInfo = bookRes.data.data || bookRes.data;
+              } catch (e) {
+                console.warn("📘 개별 책 정보 조회 실패:", e);
+              }
+            }
+
+            return {
+              userBookId: item.userBookId,
+              bookId: bookInfo?.bookId ?? item.bookId,
+              title: bookInfo?.title ?? "제목 없음",
+              author: bookInfo?.author ?? "작가 정보 없음",
+              coverImageUrl: bookInfo?.coverImageUrl
+                ? `http://43.200.102.14:5000${bookInfo.coverImageUrl}`
+                : defaultBook,
+              currentPage: item.currentPage ?? 0,
+              maxPage: item.maxPage ?? bookInfo?.totalBook ?? 300,
+              lastRead: item.updatedAt
+                ? new Date(item.updatedAt).toLocaleDateString()
+                : new Date().toLocaleDateString(),
+              favorite: item.favorite ?? false,
+              status: item.status ?? "NOW_READ",
+            };
+          })
+        );
+        setBooks(booksData);
       } else setBooks([]);
     } catch (err) {
       console.error("지금 읽는 책 조회 실패:", err);
@@ -54,49 +69,12 @@ function MainPage() {
     }
   };
 
-  // 2️⃣ ESP32 currentPage & 총 읽은 페이지 한번에 반영
-  const fetchCurrentPagesAndToday = async () => {
-    if (!userId) return;
-    try {
-      const [embedRes, logRes] = await Promise.all([
-        axios.get(`http://43.200.102.14:5000/api/upload/frontend/book-info/${userId}`),
-        axios.get(`http://43.200.102.14:5000/api/readinglogs/user/${userId}/today`)
-      ]);
+  // 초기 데이터 fetch
+  useEffect(() => {
+    fetchBooks();
+  }, []);
 
-      const embedData = embedRes.data;
-      const logData = logRes.data;
-
-      setBooks((prev) =>
-        prev.map((b) =>
-          embedData.success && embedData.bookId === b.bookId
-            ? { ...b, currentPage: embedData.currentPage }
-            : b
-        )
-      );
-
-      return logData.success ? logData.totalPagesRead ?? 0 : 0;
-    } catch (err) {
-      console.error("페이지 정보 조회 실패:", err);
-      return 0;
-    }
-  };
-
-  // 3️⃣ 다 읽은 책으로 상태 변경
-  const moveBookToDone = async (userBookId) => {
-    try {
-      await axios.put(
-        `http://43.200.102.14:5000/api/userbooks/${userBookId}/status`,
-        { status: "READ_DONE" },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setBooks((prev) => prev.filter((b) => b.userBookId !== userBookId));
-      console.log(`✅ ${userBookId}번 책을 완독 처리`);
-    } catch (err) {
-      console.error("완독 상태 변경 실패:", err);
-    }
-  };
-
-  // 4️⃣ 책 삭제
+  // ✅ 책 삭제
   const handleDeleteBook = async (userBookId) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
@@ -111,16 +89,28 @@ function MainPage() {
     }
   };
 
-  // 초기 데이터 fetch
-  useEffect(() => {
-    fetchBooks().then(fetchCurrentPagesAndToday);
-  }, []);
+  // ✅ 책 완독 처리
+  const moveBookToDone = async (userBookId) => {
+    try {
+      await axios.put(
+        `http://43.200.102.14:5000/api/userbooks/${userBookId}/status`,
+        { status: "READ_DONE" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setBooks((prev) => prev.filter((b) => b.userBookId !== userBookId));
+      console.log(`✅ ${userBookId}번 책 완독 처리`);
+    } catch (err) {
+      console.error("완독 상태 변경 실패:", err);
+    }
+  };
+  
 
   return (
     <>
       <Header />
       <MainImage />
-      <BookState todayPages={0} />
+      <BookState todayPage={0} />
+      
 
       <div className="button-container">
         <button className="button" onClick={() => setShowModal(true)}>
@@ -164,10 +154,7 @@ function MainPage() {
               100
             );
 
-            // 진행률 100%이면 자동 완독 처리
-            if (progress >= 100) {
-              moveBookToDone(book.userBookId);
-            }
+            if (progress >= 100) moveBookToDone(book.userBookId);
 
             const borderClass = editMode
               ? "edit-border"
