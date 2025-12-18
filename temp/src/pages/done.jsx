@@ -23,7 +23,7 @@ function DoneBook({ book, deleteMode, onDelete }) {
       <div className="main__books-texts">
         <div className="main__book-title">{book.title}</div>
         <div className="main__book-sub-text">{book.author}</div>
-        <div className="main__book-sub-text">독서시간: {book.readTime || "00:45"}</div>
+        <div className="main__book-sub-text">독서시간: {book.readTime || "00:00"}</div>
         <div className="main__book-sub-text">완독 날짜: {book.lastRead}</div>
       </div>
     </div>
@@ -33,7 +33,6 @@ function DoneBook({ book, deleteMode, onDelete }) {
 function DonePage() {
   const [books, setBooks] = useState([]);
   const [deleteMode, setDeleteMode] = useState(false);
-  const [usedBookIds, setUsedBookIds] = useState([]); // ✅ 삭제 후 다시 선택 가능하도록 관리
   const token = localStorage.getItem("token");
   const userId = Number(localStorage.getItem("userId"));
 
@@ -53,11 +52,12 @@ function DonePage() {
           coverImageUrl: item.book?.coverImageUrl
             ? `http://43.200.102.14:5000${item.book.coverImageUrl}`
             : defaultBook,
-          readTime: item.readTime || "00:45",
-          lastRead: new Date().toLocaleDateString(), // ✅ 항상 오늘 날짜
+          readTime: item.readingTime || "00:00", // ✅ 여기 그대로 사용
+          lastRead: item.completionDate
+            ? new Date(item.completionDate).toLocaleDateString()
+            : "-",
         }));
         setBooks(mapped);
-        setUsedBookIds(mapped.map(b => b.bookId)); // ✅ 선택된 bookId 저장
       } else {
         console.warn("완독 책 불러오기 실패:", res.data.message);
       }
@@ -74,7 +74,6 @@ function DonePage() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setBooks(prev => prev.filter(b => b.userBookId !== userBookId));
-      setUsedBookIds(prev => prev.filter(id => id !== bookId)); // ✅ 삭제 시 다시 선택 가능
       alert("삭제 완료");
     } catch (err) {
       console.error("삭제 실패:", err);

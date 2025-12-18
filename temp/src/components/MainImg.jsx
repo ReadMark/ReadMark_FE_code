@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import mainImg from "../assets/MainImg.jpg";
 import "./MainImg.css";
-import { getTodayPages, getConsecutiveDays } from "../apis/readingApi";
+import { getTodayPages, getReadingStats } from "../apis/readingApi";
 
 function MainImage() {
   const [todayPages, setTodayPages] = useState(0);
-  const [consecutiveDays, setConsecutiveDays] = useState(0);
+  const [currentDays, setCurrentDays] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const token = localStorage.getItem("token");
-  const rawUserId = localStorage.getItem("userId");
-  const userId = rawUserId ? rawUserId.replace(/^["']+|["']+$/g, "").trim() : null;
+  const userId = localStorage.getItem("userId")?.replace(/^["']+|["']+$/g, "").trim();
 
   useEffect(() => {
     if (!token || !userId) {
@@ -22,15 +21,17 @@ function MainImage() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [pages, days] = await Promise.all([
-          getTodayPages(userId, token),
-          getConsecutiveDays(userId, token),
-        ]);
+
+        // 오늘 읽은 페이지 수
+        const pages = await getTodayPages(userId, token);
+        // 전체 통계 가져오기
+        const stats = await getReadingStats(userId, token);
 
         setTodayPages(pages);
-        setConsecutiveDays(days);
+        // 오늘 안 읽었으면 0, 오늘 읽으면 maxConsecutiveDays
+        setCurrentDays(pages > 0 ? stats.maxConsecutiveDays : 0);
       } catch (err) {
-        console.error("❌ 데이터 가져오기 실패:", err);
+        console.error("❌ 메인 데이터 가져오기 실패:", err);
       } finally {
         setLoading(false);
       }
@@ -51,7 +52,6 @@ function MainImage() {
   return (
     <div className="main_img-container">
       <img className="main_img-img" src={mainImg} alt="메인 이미지" />
-
       <div
         className="main_img-text-container"
         style={{
@@ -62,22 +62,30 @@ function MainImage() {
           textAlign: "center",
         }}
       >
-        {/* ✅ 오늘 페이지 표시 */}
+        {/* 오늘 읽은 페이지 표시 */}
         <div className="main_img-text">
           오늘 읽은 페이지 수: {todayPages}p
-          {todayPages > 0 && <><br />잘 하고 있어요! 👏</>}
+          {todayPages > 0 && (
+            <>
+              <br />잘 하고 있어요! 👏
+            </>
+          )}
         </div>
 
-        {/* ✅ 연속 독서 상태 표시 */}
+        {/* 연속 독서일 표시 */}
         <div className="main_img-text" style={{ marginTop: "10px" }}>
-          {todayPages === 0 && consecutiveDays < 2 && (
-            <span>{consecutiveDays}일째 책장이 비어있어요 🥺</span>
-          )}
-          {todayPages === 0 && consecutiveDays >= 2 && (
-            <span>오늘은 쉬지만, 연속 {consecutiveDays}일째 기록 유지 중 🔥</span>
-          )}
-          {todayPages > 0 && consecutiveDays > 1 && (
-            <span>연속 {consecutiveDays}일 독서 달성 중! 📚</span>
+          {todayPages === 0 ? (
+            <span>
+              {currentDays === 0
+                ? "책장이 비어있어요 🥺"
+                : `연속 ${currentDays}일 읽었지만 오늘은 아직이에요 ☁️`}
+            </span>
+          ) : (
+            <span>
+              {currentDays > 1
+                ? `연속 ${currentDays}일 독서 중! 📚`
+                : "오늘부터 다시 시작!"}
+            </span>
           )}
         </div>
       </div>
