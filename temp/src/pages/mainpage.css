@@ -21,9 +21,9 @@
 .modal input[type="text"],
 .modal input[type="number"],
 .modal input[type="date"] {
-  width: 200px;       /* 원하는 너비로 조정 */
+  width: 200px;      
   padding: 5px 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-sizing: border-box; /* padding 포함해서 width 계산 */
+  box-sizing: border-box; 
 }
