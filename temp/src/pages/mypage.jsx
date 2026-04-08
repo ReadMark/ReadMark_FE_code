@@ -8,13 +8,12 @@ import Record from "../components/mypage/record";
 import Profile from "../components/mypage/profile";
 import axios from "axios";
 
-// ✅ 모달 import 순서 바로잡음
-import ModalAddFavoritePage from "../components/mypage/ModalAddFavoritePage"; // 페이지 추가 모달
-import ModalAddFavoriteSen from "../components/mypage/ModalAddFavoriteSen"; // 문장 추가 모달
+import ModalAddFavoritePage from "../components/mypage/ModalAddFavoritePage"; 
+import ModalAddFavoriteSen from "../components/mypage/ModalAddFavoriteSen"; 
 
 function Mypage() {
-  const [showPageModal, setShowPageModal] = useState(false); // 페이지 추가 모달
-  const [showSentenceModal, setShowSentenceModal] = useState(false); // 문장 추가 모달
+  const [showPageModal, setShowPageModal] = useState(false); 
+  const [showSentenceModal, setShowSentenceModal] = useState(false); 
   const [editingSentence, setEditingSentence] = useState(null);
   const [deleteMode, setDeleteMode] = useState(false);
 
@@ -33,7 +32,6 @@ function Mypage() {
     window.location.replace("/login");
   };
 
-  // ✅ 데이터 가져오기
   useEffect(() => {
     if (!token || !userId || userId === "undefined") {
       alert("로그인 후 접근하세요.");
@@ -44,22 +42,22 @@ function Mypage() {
     const fetchStats = async () => {
       try {
         const res = await axios.get(
-          `http://43.200.102.14:5000/api/mypage/user/${userId}/stats`,
+          `http://example/api/mypage/user/${userId}/stats`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
 
         if (res.data.success) {
-          const d = res.data.data; // data 꺼내기
+          const d = res.data.data; 
 
           setStats({
-            readingStreak: d.maxConsecutiveDays, // 최대 연속으로 읽은 날 수
-            totalBooks: d.totalStamps, // 총 모은 도장 개수
-            totalDays: d.totalReadingDays, // 총 읽은 날 수
-            readingBooks: d.nowReadingCount, // 읽고 있는 책
-            wishlistBooks: d.wannaReadCount, // 읽고 싶은 책
-            finishedBooks: d.readDoneCount, // 다 읽은 책
+            readingStreak: d.maxConsecutiveDays,
+            totalBooks: d.totalStamps, 
+            totalDays: d.totalReadingDays, 
+            readingBooks: d.nowReadingCount,
+            wishlistBooks: d.wannaReadCount,
+            finishedBooks: d.readDoneCount, 
           });
         }
       } catch (err) {
@@ -70,7 +68,7 @@ function Mypage() {
     const fetchPages = async () => {
       try {
         const res = await axios.get(
-          `http://43.200.102.14:5000/api/mypage/user/${userId}/favorite-pages`,
+          `http://example/api/mypage/user/${userId}/favorite-pages`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setPages(res.data.success ? res.data.favoritePages : []);
@@ -83,7 +81,7 @@ function Mypage() {
     const fetchSentences = async () => {
       try {
         const res = await axios.get(
-          `http://43.200.102.14:5000/api/mypage/user/${userId}/favorite-quotes`,
+          `http://example/api/mypage/user/${userId}/favorite-quotes`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setSentences(res.data.success ? res.data.favoriteQuotes : []);
@@ -98,7 +96,6 @@ function Mypage() {
     fetchSentences();
   }, [token, userId]);
 
-  // ✅ 페이지 새로고침
   const refreshPages = async (newPage) => {
     if (newPage) {
       setPages((prev) => (prev ? [...prev, newPage] : [newPage]));
@@ -106,7 +103,7 @@ function Mypage() {
     }
     try {
       const res = await axios.get(
-        `http://43.200.102.14:5000/api/mypage/user/${userId}/favorite-pages`,
+        `http://example/api/mypage/user/${userId}/favorite-pages`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setPages(res.data.success ? res.data.favoritePages : []);
@@ -116,7 +113,6 @@ function Mypage() {
     }
   };
 
-  // ✅ 문장 새로고침
   const refreshSentences = async (newSentence) => {
     if (newSentence) {
       setSentences((prev) => (prev ? [...prev, newSentence] : [newSentence]));
@@ -124,7 +120,7 @@ function Mypage() {
     }
     try {
       const res = await axios.get(
-        `http://43.200.102.14:5000/api/mypage/user/${userId}/favorite-quotes`,
+        `http://example/api/mypage/user/${userId}/favorite-quotes`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSentences(res.data.success ? res.data.favoriteQuotes : []);
@@ -134,12 +130,11 @@ function Mypage() {
     }
   };
 
-  // ✅ 삭제 함수
   const handleDeletePage = async (favPageId) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
       const res = await axios.delete(
-        `http://43.200.102.14:5000/api/mypage/favorite-page/${favPageId}`,
+        `http://example/api/mypage/favorite-page/${favPageId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.data.success)
@@ -154,7 +149,7 @@ function Mypage() {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
       const res = await axios.delete(
-        `http://43.200.102.14:5000/api/mypage/favorite-quote/${favQuoteId}`,
+        `http://example/api/mypage/favorite-quote/${favQuoteId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.data.success)
@@ -193,7 +188,6 @@ function Mypage() {
         </div>
 
         <div className="button-containers">
-          {/* ✅ 버튼 순서/이름 일치시킴 */}
           <button
             className="modify-button"
             onClick={() => {
@@ -269,7 +263,6 @@ function Mypage() {
         </div>
       </main>
 
-      {/* ✅ 문장 추가 모달 */}
       {showSentenceModal && (
         <ModalAddFavoriteSen
           onClose={() => {
@@ -282,7 +275,6 @@ function Mypage() {
         />
       )}
 
-      {/* ✅ 페이지 추가 모달 */}
       {showPageModal && (
         <ModalAddFavoritePage
           onClose={() => setShowPageModal(false)}
