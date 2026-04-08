@@ -1,59 +1,53 @@
- /* 캘린더 전체를 감싸는 컨테이너 */
 .calendar_container {
   margin-left: 20px;
 } 
 
-/* 클릭한 날짜 (선택된 날짜) */
 .react-calendar__tile--active {
-  background-color: rgb(183, 244, 255) !important; /* 클릭한 날짜 배경 */
-  color: rgb(255, 255, 255) !important;                          /* 글자 색상 */
+  background-color: rgb(183, 244, 255) !important;
+  color: rgb(255, 255, 255) !important;                     
 }
 
-/* 오늘 날짜 */
 .react-calendar__tile--now {
-  background-color: rgb(246, 255, 0) !important; /* 오늘 날짜 노랑 */
+  background-color: rgb(246, 255, 0) !important; 
   color: black !important;
 }
 
 .CalendarContainer .calendar_container {
-  flex: 1;       /* 비율 줄이기 */
-  max-width: 50%; /* 최대 가로 크기 제한 */
+  flex: 1;       
+  max-width: 50%; 
 }
 
 
 .react-calendar {
-  background-color: transparent !important; /* 부모 회색 보이도록 */
+  background-color: transparent !important;
 }
 
 
 .react-calendar {
   border: none;
   font-family: 'Gasoek One', sans-serif;
-  width: 100%;          /* 부모 flex 크기에 맞게 채우도록 */
+  width: 100%;          
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   border-radius: 10px;
 }
 
-
-/* 날짜 하나(타일) 스타일 */
 .react-calendar__tile {
   width: 100px;                
-  min-height: 120px;           /* 최소 높이로 충분히 확보 */
+  min-height: 120px;         
   font-size: 16px;             
   position: relative;          
   display: flex;               
   flex-direction: column;      
   justify-content: start;      
   align-items: center;         
-  padding-top: 5px;            /* 위쪽 여백 */
-  box-sizing: border-box;      /* padding 포함 높이 계산 */
+  padding-top: 5px;          
+  box-sizing: border-box;    
 }
 
 
-/* 날짜 아래에 들어가는 도장 이미지 */
 .stamp_img {
-  width: 130px;                 /* 도장 이미지 가로 크기 */
-  height: 90px;                /* 도장 이미지 세로 크기 */
+  width: 130px;            
+  height: 90px;   
   margin-top: -5px;
   margin-left: -4px;
 }
