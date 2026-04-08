@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://43.200.102.14:5000/api",
+  baseURL: "http://example/api",
 });
 
 // ✅ 오늘 읽은 페이지 수
