@@ -5,7 +5,6 @@ function Bookwant({ userBookId, title, author, coverImage, onDelete, deleteMode 
 
   const handleClick = () => {
     if (deleteMode) {
-      // 삭제 모드일 때만 확인창
       if (window.confirm("정말 삭제하시겠습니까?")) {
         onDelete(userBookId);
       }
