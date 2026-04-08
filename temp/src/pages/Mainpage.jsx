@@ -90,7 +90,7 @@ function MainPage() {
   const moveBookToDone = async (userBookId) => {
     try {
       await axios.put(
-        `http://43.200.102.14:5000/api/userbooks/${userBookId}/status`,
+        `http://example/api/userbooks/${userBookId}/status`,
         { status: "READ_DONE" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
