@@ -24,7 +24,7 @@ function ModalNowRead({ onClose, refreshBooks }) {
       if (bookImage) formData.append("coverImage", bookImage);
 
       const bookRes = await axios.post(
-        "http://43.200.102.14:5000/api/books",
+        "http://example/api/books",
         formData,
         {
           headers: {
@@ -40,7 +40,7 @@ function ModalNowRead({ onClose, refreshBooks }) {
 
       // UserBook 등록
       await axios.post(
-        "http://43.200.102.14:5000/api/userbooks",
+        "http://example/api/userbooks",
         {
           userId,
           bookId,
@@ -63,7 +63,7 @@ function ModalNowRead({ onClose, refreshBooks }) {
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <h2>📖 새 책 추가</h2>
+        <h2>새 책 추가</h2>
 
         <div>
           <p>책 제목</p>
