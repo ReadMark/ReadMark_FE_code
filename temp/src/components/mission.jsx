@@ -1,4 +1,3 @@
-// Mission.jsx
 import { useEffect, useState } from "react";
 import MissionEach from "./missionEach";
 import FirstImg from "../assets/missionF.svg";
@@ -38,7 +37,7 @@ function Mission({ selectedDate, stampDates, setStampDates }) {
     const fetchDailySummary = async () => {
       try {
         const res = await axios.get(
-          `http://43.200.102.14:5000/api/calendar/${userId}/stamp/${dateStr}`,
+          `http://example/api/calendar/${userId}/stamp/${dateStr}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -51,7 +50,6 @@ function Mission({ selectedDate, stampDates, setStampDates }) {
         setTodayPages(pages);
         setTodayMinutes(minutes);
 
-        // ✅ 완료 여부 판단
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const selected = new Date(dateObj);
@@ -62,12 +60,10 @@ function Mission({ selectedDate, stampDates, setStampDates }) {
         else if (todayMission.requiredPages && pages >= todayMission.requiredPages) isMissionDone = true;
         else if (todayMission.requiredMinutes && minutes >= todayMission.requiredMinutes) isMissionDone = true;
 
-        // 과거 날인데 미완료면 false
         if (selected < today && !isMissionDone) isMissionDone = false;
 
         setCompleted(isMissionDone);
 
-        // 오늘 완료면 서버 등록
         if (isMissionDone && selected.getTime() === today.getTime() && !stampDates.includes(dateStr)) {
           setStampDates(prev => [...prev, dateStr]);
           await axios.post(
@@ -88,7 +84,6 @@ function Mission({ selectedDate, stampDates, setStampDates }) {
     return () => { isMounted = false; };
   }, [selectedDate, stampDates]);
 
-  // ✅ 스타일 계산
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const selected = new Date(dateObj);
@@ -124,10 +119,10 @@ function Mission({ selectedDate, stampDates, setStampDates }) {
           {loading
             ? "⏳ 로딩 중..."
             : completed
-            ? "✅ 미션 완료!"
+            ? "미션 완료!"
             : todayMission.requiredPages !== undefined
-            ? `📖 읽은 페이지: ${todayPages}p`
-            : `⏱ 읽은 시간: ${todayMinutes}분`}
+            ? `읽은 페이지: ${todayPages}p`
+            : `읽은 시간: ${todayMinutes}분`}
         </div>
       </div>
     </div>
