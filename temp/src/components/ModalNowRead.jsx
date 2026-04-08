@@ -41,12 +41,11 @@ function ModalNowRead({
       );
 
       if (!bookRes.data.success) {
-        return alert("📕 책 등록 실패: " + bookRes.data.message);
+        return alert("책 등록 실패: " + bookRes.data.message);
       }
 
       const bookId = bookRes.data.data?.bookId || bookRes.data.bookId;
 
-      // 2️⃣ UserBook 등록
       const currentPage = Math.max(0, Number(currentPageFromEmbed || 0));
       const totalPageNum = Number(totalPage);
       const statusToSave =
@@ -54,7 +53,7 @@ function ModalNowRead({
       const lastReadAt = readDateFromEmbed || new Date().toISOString();
 
       await axios.post(
-        "http://43.200.102.14:5000/api/userbooks",
+        "http://example",
         {
           userId,
           bookId,
@@ -68,10 +67,9 @@ function ModalNowRead({
         }
       );
 
-      // 3️⃣ 오늘 읽은 페이지 기록 (옵션)
       if (currentPage > 0) {
         await axios.post(
-          "http://43.200.102.14:5000/api/readinglogs",
+          "http://example",
           {
             userId,
             pagesRead: currentPage,
@@ -85,14 +83,14 @@ function ModalNowRead({
 
       alert(
         statusToSave === "READ_DONE"
-          ? "🎉 완료된 책으로 등록되었습니다!"
-          : "📚 지금 읽는 책 등록 완료!"
+          ? "완료된 책으로 등록되었습니다!"
+          : "지금 읽는 책 등록 완료!"
       );
       await refreshBooks();
       await new Promise((res) => setTimeout(res, 300));
       onClose();
     } catch (err) {
-      console.error("❌ 등록 중 오류:", err);
+      console.error("등록 중 오류:", err);
       alert("서버 오류: " + JSON.stringify(err.response?.data || err.message));
     }
   };
@@ -100,7 +98,7 @@ function ModalNowRead({
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <h2>📖 새 책 추가</h2>
+        <h2>새 책 추가</h2>
 
         <div>
           <p>책 제목</p>
