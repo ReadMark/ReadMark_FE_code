@@ -22,19 +22,16 @@ function Join() {
 
   const handleJoin = async () => {
     try {
-      // 이메일 간단 체크
       if (!form.email.includes("@")) {
         alert("이메일 형식이 올바르지 않습니다.");
         return;
       }
 
-      // 필수 값 체크
       if (!form.name || !form.userId || !form.password) {
         alert("모든 필수 항목을 입력해주세요.");
         return;
       }
 
-      // 서버 요구 요청 body
       const bodyData = {
         name: form.name,
         username: form.userId, // username 필드로 전송
@@ -44,7 +41,7 @@ function Join() {
 
       console.log("회원가입 요청 body:", bodyData);
 
-      const res = await fetch("http://43.200.102.14:5000/api/users/join", {
+      const res = await fetch("http://example/api/users/join", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bodyData),
@@ -60,35 +57,32 @@ function Join() {
 
       alert("회원가입 성공!");
 
-      // 서버 반환 userId 가져오기
       const userId = data.data?.userId;
       if (!userId) return alert("서버에서 userId를 가져오지 못했습니다.");
 
-      // 프로필 이미지 업로드 (선택 사항)
       if (form.profileImage) {
         const imgData = new FormData();
         imgData.append("image", form.profileImage);
 
-        const imgRes = await fetch(`http://43.200.102.14:5000/api/users/${userId}/profile-image`, {
+        const imgRes = await fetch(`http://example/api/users/${userId}/profile-image`, {
           method: "POST",
           body: imgData
         });
 
         const imgDataJson = await imgRes.json();
         if (imgRes.ok && imgDataJson.success) {
-          localStorage.setItem("profileImage", `http://43.200.102.14:5000${imgDataJson.profileImageUrl}`);
+          localStorage.setItem("profileImage", `http://example${imgDataJson.profileImageUrl}`);
         } else {
           console.error("프로필 업로드 실패:", imgDataJson);
         }
       }
 
-      // localStorage에 회원 정보 저장
       localStorage.setItem("userId", userId);
       localStorage.setItem("username", form.userId);
       localStorage.setItem("name", form.name);
       localStorage.setItem("email", form.email);
 
-      navigate("/login"); // 가입 후 로그인 페이지 이동
+      navigate("/login");
 
     } catch (err) {
       console.error("네트워크 에러:", err);
