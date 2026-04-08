@@ -39,7 +39,7 @@ function DonePage() {
   const fetchDoneBooks = async () => {
     try {
       const res = await axios.get(
-        `http://43.200.102.14:5000/api/userbooks/user/${userId}/status/READ_DONE`,
+        `http://example/api/userbooks/user/${userId}/status/READ_DONE`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -50,9 +50,9 @@ function DonePage() {
           title: item.book?.title || "제목 없음",
           author: item.book?.author || "작가 정보 없음",
           coverImageUrl: item.book?.coverImageUrl
-            ? `http://43.200.102.14:5000${item.book.coverImageUrl}`
+            ? `http://example${item.book.coverImageUrl}`
             : defaultBook,
-          readTime: item.readingTime || "00:00", // ✅ 여기 그대로 사용
+          readTime: item.readingTime || "00:00",
           lastRead: item.completionDate
             ? new Date(item.completionDate).toLocaleDateString()
             : "-",
@@ -70,7 +70,7 @@ function DonePage() {
     try {
       if (!window.confirm("정말 삭제하시겠습니까?")) return;
       await axios.delete(
-        `http://43.200.102.14:5000/api/userbooks/${userBookId}`,
+        `http://example/api/userbooks/${userBookId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setBooks(prev => prev.filter(b => b.userBookId !== userBookId));
