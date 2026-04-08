@@ -11,23 +11,20 @@ function ModalEditsen({ favQuote, bookData, onClose, setSentences }) {
 
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
-  const serverUrl = "http://43.200.102.14:5000"; // 서버 주소
+  const serverUrl = "http://example";
 
   useEffect(() => {
     if (favQuote) {
-      // 편집 모드
       setBookTitle(favQuote.bookTitle || "");
       setContent(favQuote.content || "");
       setPageNumber(favQuote.pageNumber || 1);
       setCoverImageUrl(favQuote.coverImageUrl || "");
     } else if (bookData) {
-      // 책 선택 후 새 문장 추가
       setBookTitle(bookData.bookTitle || "");
       setContent("");
       setPageNumber(1);
       setCoverImageUrl(bookData.coverImageUrl || "");
     } else {
-      // 완전히 새 문장 추가
       setBookTitle("");
       setContent("");
       setPageNumber(1);
@@ -41,7 +38,6 @@ function ModalEditsen({ favQuote, bookData, onClose, setSentences }) {
     if (!pageNumber || pageNumber < 1) return alert("페이지 번호를 1 이상 입력해주세요.");
 
     try {
-      // payload
       const payload = {
         bookTitle,
         coverImageUrl: coverImageUrl || null,
@@ -50,7 +46,6 @@ function ModalEditsen({ favQuote, bookData, onClose, setSentences }) {
       };
 
       if (favQuote && favQuote.favQuoteId) {
-        // 편집 모드 (PUT)
         const res = await axios.put(
           `${serverUrl}/api/mypage/favorite-quote/${favQuote.favQuoteId}`,
           payload,
@@ -67,7 +62,7 @@ function ModalEditsen({ favQuote, bookData, onClose, setSentences }) {
           onClose();
         }
       } else {
-        // 새 문장 추가 (POST)
+        
         const res = await axios.post(
           `${serverUrl}/api/mypage/user/${userId}/favorite-quote`,
           payload,
@@ -87,8 +82,7 @@ function ModalEditsen({ favQuote, bookData, onClose, setSentences }) {
       alert("저장 실패: " + JSON.stringify(err.response?.data || err.message));
     }
   };
-
-  // 서버 URL 처리된 이미지 미리보기
+  
   const previewImageSrc = coverImageUrl
     ? coverImageUrl.startsWith("http")
       ? coverImageUrl
