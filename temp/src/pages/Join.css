@@ -1,6 +1,6 @@
-.Join-all{   /* 기준점을 좌상단으로 */
+.Join-all{   
    width: 100%;
-  height: 100vh;       /* 꽉 채우기 */
+  height: 100vh;       
   display: flex;
   justify-content: center;
   align-items: center;
