@@ -48,7 +48,7 @@ function MainPage() {
               title: bookInfo?.title ?? "제목 없음",
               author: bookInfo?.author ?? "작가 정보 없음",
               coverImageUrl: bookInfo?.coverImageUrl
-                ? `http://43.200.102.14:5000${bookInfo.coverImageUrl}`
+                ? `http://example${bookInfo.coverImageUrl}`
                 : defaultBook,
               currentPage: item.currentPage ?? 0,
               maxPage: item.maxPage ?? bookInfo?.totalBook ?? 300,
