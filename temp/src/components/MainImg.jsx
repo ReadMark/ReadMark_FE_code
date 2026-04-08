@@ -69,7 +69,6 @@ function MainImage() {
           )}
         </div>
 
-        {/* 연속 독서일 표시 */}
         <div className="main_img-text" style={{ marginTop: "10px" }}>
           {todayPages === 0 ? (
             <span>
