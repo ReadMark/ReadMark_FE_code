@@ -34,7 +34,7 @@ function Join() {
 
       const bodyData = {
         name: form.name,
-        username: form.userId, // username 필드로 전송
+        username: form.userId, 
         email: form.email,
         password: form.password,
       };
