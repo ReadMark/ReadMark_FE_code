@@ -19,12 +19,11 @@ function MainPage() {
   const token = localStorage.getItem("token");
   const userId = Number(localStorage.getItem("userId"));
 
-  // ✅ 읽고 있는 책 불러오기 (book이 없을 경우 개별 조회)
   const fetchBooks = async () => {
     if (!token || !userId) return;
     try {
       const res = await axios.get(
-        `http://43.200.102.14:5000/api/userbooks/user/${userId}/status/NOW_READ`,
+        `http://example/api/userbooks/user/${userId}/status/NOW_READ`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -35,11 +34,11 @@ function MainPage() {
             if (!bookInfo && item.bookId) {
               try {
                 const bookRes = await axios.get(
-                  `http://43.200.102.14:5000/api/books/${item.bookId}`
+                  `http://example/api/books/${item.bookId}`
                 );
                 bookInfo = bookRes.data.data || bookRes.data;
               } catch (e) {
-                console.warn("📘 개별 책 정보 조회 실패:", e);
+                console.warn("개별 책 정보 조회 실패:", e);
               }
             }
 
@@ -69,17 +68,16 @@ function MainPage() {
     }
   };
 
-  // 초기 데이터 fetch
   useEffect(() => {
     fetchBooks();
   }, []);
 
-  // ✅ 책 삭제
+
   const handleDeleteBook = async (userBookId) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
       await axios.delete(
-        `http://43.200.102.14:5000/api/userbooks/${userBookId}`,
+        `http://example/api/userbooks/${userBookId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setBooks((prev) => prev.filter((b) => b.userBookId !== userBookId));
@@ -89,7 +87,6 @@ function MainPage() {
     }
   };
 
-  // ✅ 책 완독 처리
   const moveBookToDone = async (userBookId) => {
     try {
       await axios.put(
@@ -98,7 +95,7 @@ function MainPage() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setBooks((prev) => prev.filter((b) => b.userBookId !== userBookId));
-      console.log(`✅ ${userBookId}번 책 완독 처리`);
+      console.log(`${userBookId}번 책 완독 처리`);
     } catch (err) {
       console.error("완독 상태 변경 실패:", err);
     }
