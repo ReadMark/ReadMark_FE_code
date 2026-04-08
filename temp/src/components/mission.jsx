@@ -67,7 +67,7 @@ function Mission({ selectedDate, stampDates, setStampDates }) {
         if (isMissionDone && selected.getTime() === today.getTime() && !stampDates.includes(dateStr)) {
           setStampDates(prev => [...prev, dateStr]);
           await axios.post(
-            `http://43.200.102.14:5000/api/missions/${dateStr}/complete?userId=${userId}`,
+            `http://example/api/missions/${dateStr}/complete?userId=${userId}`,
             {},
             { headers: { Authorization: `Bearer ${token}` } }
           );
