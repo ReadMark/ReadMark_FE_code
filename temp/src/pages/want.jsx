@@ -18,7 +18,7 @@ function WantPage() {
   const fetchBooks = async () => {
     try {
       const res = await axios.get(
-        `http://43.200.102.14:5000/api/userbooks/user/${userId}/status/WANNA_READ`,
+        `http://example/api/userbooks/user/${userId}/status/WANNA_READ`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.data.success) setBooks(res.data.data);
@@ -36,7 +36,7 @@ function WantPage() {
   const handleDeleteBook = async (userBookId) => {
     try {
       const res = await axios.delete(
-        `http://43.200.102.14:5000/api/userbooks/${userBookId}`,
+        `http://example/api/userbooks/${userBookId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.data.success) fetchBooks();
