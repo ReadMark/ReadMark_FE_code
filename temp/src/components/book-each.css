@@ -9,7 +9,7 @@
 
 .main__books-container {
   display: grid;
-  grid-template-columns: repeat(4, 220px); /* 한 줄에 4개 */
+  grid-template-columns: repeat(4, 220px);
   justify-content: center; 
   gap: 25px 80px; 
   margin: 60px auto 100px auto;
