@@ -26,7 +26,6 @@
   background-color: white;
 }
 
-/* 페이지 정보 (프로그래스바 포함) */
 .book-progress-container {
   margin-top: 10px;
 }
@@ -54,7 +53,6 @@
   color: #555;
 }
 
-/* 저자 텍스트 */
 .main__book-sub-text {
   color: rgb(85, 85, 85);
   font-size: 16px;
@@ -73,20 +71,17 @@
   justify-content: center;
 }
 
-/* 삭제 모드일 때 */
 .delete-hover {
   border: 2px solid red;
   cursor: pointer;
   transition: 0.2s;
 }
 
-/* 삭제 모드 아닐 때 호버 효과 */
 .main__book-each:not(.delete-hover):hover {
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
   transform: translateY(-2px);
 }
 
-/* 버튼 영역 */
 .button-container {
   flex-direction: column;
   margin-top: 20px;
@@ -109,7 +104,6 @@
   background-color: rgb(210, 210, 210);
 }
 
-/* 마지막으로 읽은 날짜 표시 */
 .last-read-date {
   font-size: 13px;
   color: #666;
@@ -120,7 +114,7 @@
 .modal {
   position: relative;
   background: white;
-  z-index: 9999; /* 클릭이 덮이지 않게 최상단으로 올리기 */
+  z-index: 9999;
   padding: 20px;
   border-radius: 10px;
 }
@@ -129,7 +123,7 @@
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 9998; /* modal 바로 아래 */
+  z-index: 9998; 
   display: flex;
   justify-content: center;
   align-items: center;
