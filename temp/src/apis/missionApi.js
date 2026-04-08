@@ -4,7 +4,6 @@ const api = axios.create({
   baseURL: "http://43.200.102.14:5000/api",
 });
 
-// 오늘 읽은 페이지 수 가져오기
 export const getTodayPages = async (userId) => {
   try {
     const res = await api.get(`/readinglogs/user/${userId}/today`);
@@ -15,7 +14,6 @@ export const getTodayPages = async (userId) => {
   }
 };
 
-// 오늘 읽은 시간(분) 가져오기
 export const getTodayMinutes = async (userId) => {
   try {
     const res = await api.get(`/user-time/${userId}/daily`);
@@ -26,7 +24,6 @@ export const getTodayMinutes = async (userId) => {
   }
 };
 
-// 미션 완료
 export const completeMission = async (missionId, userId) => {
   try {
     const res = await api.post(
