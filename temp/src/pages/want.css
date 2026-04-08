@@ -9,14 +9,11 @@
 
 .main__books-container {
   display: grid;
-  grid-template-columns: repeat(4, 220px); /* 한 줄에 4개 */
+  grid-template-columns: repeat(4, 220px);
   justify-content: center; 
   gap: 25px 80px; 
   margin: 60px auto 100px auto;
 }
-
-
-
 
 .main__book-each {
   width: 220px;
@@ -27,7 +24,6 @@
   box-shadow: 3px 3px 8px rgba(0,0,0,0.3);
   transition: border 0.2s;
 }
-
 
 .main__book-sub-text {
   color: rgb(85, 85, 85);
@@ -53,7 +49,6 @@
   transition: 0.2s;
 }
 
-/* 삭제 모드 아닐 때 호버 효과 유지 */
 .main__book-each:not(.delete-hover):hover {
   box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
 }
