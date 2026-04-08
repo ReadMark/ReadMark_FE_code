@@ -13,7 +13,7 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      const res = await fetch("http://43.200.102.14:5000/api/users/login", {
+      const res = await fetch("http://example/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" }, 
         body: JSON.stringify({
@@ -28,17 +28,16 @@ function Login() {
         console.log("로그인 결과:", data);
         alert(data.message);
 
-        // ✅ 사용자 정보 localStorage에 저장
         const { userId, username, name, email, profileImageUrl, createdAt, token } = data.data;
-        localStorage.setItem("token", token); // 토큰 저장
+        localStorage.setItem("token", token);
         localStorage.setItem("userId", userId);
         localStorage.setItem("username", username);
         localStorage.setItem("name", name);
         localStorage.setItem("email", email);
-        localStorage.setItem("profileImage", profileImageUrl ? `http://43.200.102.14:5000${profileImageUrl}` : "");
+        localStorage.setItem("profileImage", profileImageUrl ? `http://example${profileImageUrl}` : "");
         localStorage.setItem("createdAt", createdAt);
 
-        navigate("/mypage"); // 로그인 성공 후 Mypage 이동
+        navigate("/mypage");
       } else {
         alert(`로그인 실패: ${data.message || "알 수 없는 오류"}`);
       }
