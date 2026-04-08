@@ -6,7 +6,7 @@ body {
 .header_container {
   display: flex;
   align-items: center;
-  justify-content: center; /* 타이틀 가운데 정렬 */
+  justify-content: center; 
   position: sticky;
   top: 0;
   height: 80px;
@@ -19,7 +19,7 @@ body {
 }
 
 .header_img-container {
-  position: absolute; /* 로고 왼쪽 고정 */
+  position: absolute;
   left: 15px;
   z-index: 1000;
 }
@@ -43,7 +43,7 @@ body {
 }
 
 .header_right {
-  position: absolute; /* 오른쪽 메뉴 고정 */
+  position: absolute;
   right: 30px;
   display: flex;
 }
