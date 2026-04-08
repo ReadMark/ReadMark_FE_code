@@ -38,7 +38,6 @@ function ModalNowRead({ onClose, refreshBooks }) {
         return alert("책 등록 실패: " + bookRes.data.message);
       const bookId = bookRes.data.data?.bookId || bookRes.data.bookId;
 
-      // UserBook 등록
       await axios.post(
         "http://example/api/userbooks",
         {
