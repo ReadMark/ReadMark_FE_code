@@ -1,4 +1,3 @@
-// ModalEdit.jsx
 import React, { useState, useEffect } from "react";
 import "./Modal.css";
 import axios from "axios";
@@ -12,7 +11,6 @@ function ModalEdit({ onClose, bookData, refreshBooks }) {
 
   const token = localStorage.getItem("token");
 
-  // ✅ bookData가 바뀔 때 기존 데이터 자동 세팅
   useEffect(() => {
     if (bookData) {
       setTitle(bookData.title || "");
@@ -38,9 +36,8 @@ function ModalEdit({ onClose, bookData, refreshBooks }) {
       formData.append("author", author);
       if (coverFile) formData.append("coverImage", coverFile);
 
-      // ✅ 엔드포인트 수정
       const res = await axios.put(
-        `http://43.200.102.14:5000/api/userbooks/${bookData.userBookId}/edit-book-info`,
+        `http://example/api/userbooks/${bookData.userBookId}/edit-book-info`,
         formData,
         {
           headers: {
