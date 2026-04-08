@@ -31,7 +31,7 @@ function ModalNowRead({
       if (bookImage) formData.append("coverImage", bookImage);
 
       const bookRes = await axios.post(
-        "http://43.200.102.14:5000/api/books",
+        "http://example",
         formData,
         {
           headers: {
